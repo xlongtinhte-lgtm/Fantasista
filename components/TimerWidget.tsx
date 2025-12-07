@@ -12,6 +12,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   const [isActive, setIsActive] = useState(autoStart);
   const [totalTime, setTotalTime] = useState(initialDuration);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const wakeLockRef = useRef<any>(null); // Ref for Wake Lock
   
   // Update internal state when props change
   useEffect(() => {
@@ -43,8 +44,62 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
     }
   };
 
-  // Play Bell Sound using Web Audio API
-  const playBell = () => {
+  // --- WAKE LOCK LOGIC ---
+  const requestWakeLock = async () => {
+    try {
+      if ('wakeLock' in navigator) {
+        // Only request if not already active to avoid redundant calls
+        if (!wakeLockRef.current) {
+           wakeLockRef.current = await (navigator as any).wakeLock.request('screen');
+        //    console.log('Screen Wake Lock active');
+        }
+      }
+    } catch (err: any) {
+      // Gracefully handle permission errors
+      if (err.name !== 'NotAllowedError') {
+        console.error(`Wake Lock error: ${err.name}, ${err.message}`);
+      }
+    }
+  };
+
+  const releaseWakeLock = async () => {
+    if (wakeLockRef.current) {
+      try {
+        await wakeLockRef.current.release();
+        wakeLockRef.current = null;
+        // console.log('Screen Wake Lock released');
+      } catch (err: any) {
+        console.error(`Wake Lock release error: ${err.name}, ${err.message}`);
+      }
+    }
+  };
+
+  useEffect(() => {
+    // Handle visibility change to re-acquire lock
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isActive) {
+        requestWakeLock();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    if (isActive) {
+      requestWakeLock();
+    } else {
+      releaseWakeLock();
+    }
+    
+    // Cleanup on unmount or when isActive changes
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      releaseWakeLock();
+    };
+  }, [isActive]);
+  // -----------------------
+
+  // Play Cricket Sound using Web Audio API (Approx 3 seconds)
+  const playCricketSound = () => {
     try {
       if (!audioContextRef.current) {
          initAudio();
@@ -53,22 +108,42 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
       const ctx = audioContextRef.current;
       if (!ctx) return;
 
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+      const now = ctx.currentTime;
+      
+      // Helper to create a single pulse (part of a chirp)
+      const playPulse = (time: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        // Cricket sound is typically high pitched (4000-5000Hz)
+        osc.frequency.value = 4500; 
+        osc.type = 'sine'; // Sine or triangle works well
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        // Short envelope: Attack -> Decay
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.1, time + 0.01); // Quick attack
+        gain.gain.linearRampToValueAtTime(0, time + 0.04); // Quick decay
+        
+        osc.start(time);
+        osc.stop(time + 0.05);
+      };
 
-      osc.connect(gain);
-      gain.connect(ctx.destination);
+      // Create a "Chirp" (a trill of multiple pulses)
+      const playChirp = (startTime: number) => {
+         // A chirp consists of ~3-5 pulses in quick succession
+         for(let i = 0; i < 4; i++) {
+             playPulse(startTime + (i * 0.05)); // 50ms spacing
+         }
+      };
 
-      // Bell sound simulation (Sine wave with decay)
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
-      osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 2.5); // Drop pitch
-
-      gain.gain.setValueAtTime(0.5, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2.5); // Fade out
-
-      osc.start();
-      osc.stop(ctx.currentTime + 2.5);
+      // Play pattern: 5 Chirps spaced 0.7s apart
+      // 0s, 0.7s, 1.4s, 2.1s, 2.8s -> finishes around 3s
+      const intervals = [0, 0.7, 1.4, 2.1, 2.8];
+      intervals.forEach(timeOffset => playChirp(now + timeOffset));
+      
     } catch (e) {
       console.error("Audio play error", e);
     }
@@ -83,7 +158,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
             if (prev <= 1) {
                 // Timer finished
                 setIsActive(false);
-                playBell();
+                playCricketSound(); // Cricket sound
                 if (onComplete) onComplete();
                 return 0;
             }
