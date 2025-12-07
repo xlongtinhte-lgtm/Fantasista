@@ -8,7 +8,7 @@ import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import { Heart, ArrowLeft, Settings, Edit, Wind } from 'lucide-react';
 
-const STORAGE_KEY = 'nlg_formulas_v5_full_update_5'; // Updated key to force load new data
+const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_1'; // Updated key to force load new data
 
 const App: React.FC = () => {
   // --- STATE ---
