@@ -70,42 +70,63 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-950 selection:bg-pink-500/30 selection:text-pink-100 font-inter">
       
-      {/* Header */}
-      <header className="flex-shrink-0 h-16 border-b border-white/5 bg-slate-950/80 backdrop-blur-xl flex items-center justify-between px-4 md:px-6 z-30 sticky top-0">
-        <div className="flex items-center gap-3">
-          {view !== 'grid' && (
-            <button 
-              onClick={handleBack}
-              className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-            >
-              <ArrowLeft size={20} />
-            </button>
-          )}
-          <div className="flex items-center gap-2 text-stone-100 font-bold text-xl tracking-tight cursor-pointer" onClick={() => setView('grid')}>
-            <div className="relative">
-               <div className="absolute inset-0 bg-pink-500 blur-lg opacity-40"></div>
-               <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={24} />
-            </div>
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300">
-              NLG Practice
-            </span>
-          </div>
-        </div>
+      {/* Header with Video Background (Keep Screen On Hack) */}
+      <header className="flex-shrink-0 h-14 relative overflow-hidden border-b border-white/10 z-30 sticky top-0 bg-slate-950">
         
-        <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsAdminMode(!isAdminMode)}
-              className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-600 hover:text-slate-400'}`}
-              title="Chế độ chỉnh sửa (Admin)"
-            >
-              <Settings size={18} />
-            </button>
+        {/* Video Banner Layer - Keeps screen awake and adds aesthetic */}
+        <div className="absolute inset-0 z-0 opacity-40">
+           <video 
+             autoPlay 
+             loop 
+             muted 
+             playsInline 
+             className="w-full h-full object-cover"
+             poster="https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?auto=format&fit=crop&w=800&q=80"
+           >
+             {/* Using a lightweight abstract video loop */}
+             <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4" type="video/mp4" />
+           </video>
+           {/* Dark overlay to ensure text contrast */}
+           <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
+        </div>
+
+        {/* Header Content */}
+        <div className="relative z-10 flex items-center justify-between px-4 h-full">
+          <div className="flex items-center gap-3">
+            {view !== 'grid' && (
+              <button 
+                onClick={handleBack}
+                className="p-1.5 rounded-full hover:bg-slate-800/50 text-slate-300 hover:text-white transition-colors border border-transparent hover:border-slate-600"
+              >
+                <ArrowLeft size={20} />
+              </button>
+            )}
+            <div className="flex items-center gap-2 text-stone-100 font-bold text-lg tracking-tight cursor-pointer" onClick={() => setView('grid')}>
+              <div className="relative">
+                 <div className="absolute inset-0 bg-pink-500 blur-lg opacity-40"></div>
+                 <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={20} />
+              </div>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300">
+                NLG Practice
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsAdminMode(!isAdminMode)}
+                className={`p-1.5 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-500 hover:text-slate-300'}`}
+                title="Chế độ chỉnh sửa (Admin)"
+              >
+                <Settings size={18} />
+              </button>
+          </div>
         </div>
       </header>
 
       {/* Main Content Area */}
       <main className="flex-grow overflow-y-auto scroll-smooth bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
-        <div className="max-w-4xl mx-auto min-h-full pb-10"> {/* Adjusted padding */}
+        <div className="max-w-4xl mx-auto min-h-full pb-10">
             
             {/* VIEW: GRID (Library) */}
             {view === 'grid' && (
@@ -143,7 +164,7 @@ const App: React.FC = () => {
 
                 {/* Info Section (Scrollable) */}
                 <div className="p-4 md:p-6 space-y-6">
-                  <div className="bg-slate-900/50 rounded-2xl p-6 md:p-8 border border-slate-800 shadow-xl relative">
+                  <div className="bg-slate-900/50 rounded-2xl p-4 md:p-8 border border-slate-800 shadow-xl relative">
                     {isAdminMode && (
                       <button 
                         onClick={handleEdit}
@@ -156,24 +177,36 @@ const App: React.FC = () => {
                     <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-slate-200 mb-2">
                       {currentFormula.title}
                     </h2>
-                    <p className="text-pink-400/80 font-medium text-sm md:text-base mb-6 border-b border-white/5 pb-4">
+                    <p className="text-pink-400/80 font-medium text-base md:text-lg mb-6 border-b border-white/5 pb-4">
                       {currentFormula.subtitle}
                     </p>
                     
                     <div className="space-y-6">
-                      <h3 className="text-lg font-semibold text-slate-200">Hướng dẫn thực hiện:</h3>
-                      {currentFormula.steps.map((step, idx) => (
-                        <div key={idx} className={`flex gap-4 ${step.startsWith('LƯU Ý') || step.startsWith('CẢNH BÁO') ? 'bg-slate-800/50 p-4 rounded-xl border border-white/5' : ''}`}>
-                          {!step.startsWith('LƯU Ý') && !step.startsWith('CẢNH BÁO') && (
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-pink-900/30 text-pink-400 border border-pink-500/20 flex items-center justify-center font-bold text-sm">
-                              {idx + 1}
-                            </div>
-                          )}
-                          <p className={`leading-relaxed text-sm md:text-base pt-1 whitespace-pre-line ${step.startsWith('CẢNH BÁO') ? 'text-red-300 font-medium' : (step.startsWith('LƯU Ý') ? 'text-amber-200' : 'text-slate-300')}`}>
-                            {step}
-                          </p>
-                        </div>
-                      ))}
+                      <h3 className="text-lg font-semibold text-slate-200 uppercase tracking-wide">Hướng dẫn thực hiện:</h3>
+                      {currentFormula.steps.map((step, idx) => {
+                        const isWarning = step.startsWith('CẢNH BÁO');
+                        const isNote = step.startsWith('LƯU Ý') || step.startsWith('***');
+                        
+                        return (
+                          <div key={idx} className={`flex gap-4 ${isWarning || isNote ? 'bg-slate-800/60 p-5 rounded-xl border border-white/5' : 'py-2'}`}>
+                            {!isWarning && !isNote && (
+                              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-pink-900/30 text-pink-400 border border-pink-500/20 flex items-center justify-center font-bold text-lg shadow-inner mt-1">
+                                {idx + 1}
+                              </div>
+                            )}
+                            {/* LARGE TEXT SIZE APPLIED HERE */}
+                            <p className={`leading-relaxed whitespace-pre-line ${
+                              isWarning 
+                                ? 'text-red-300 font-bold text-base md:text-lg' 
+                                : (isNote 
+                                    ? 'text-amber-200 font-medium text-base md:text-lg' 
+                                    : 'text-slate-200 text-lg md:text-xl font-medium tracking-wide')
+                            }`}>
+                              {step}
+                            </p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

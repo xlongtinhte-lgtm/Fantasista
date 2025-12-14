@@ -98,7 +98,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   }, [isActive]);
   // -----------------------
 
-  // Play Cricket Sound using Web Audio API (Approx 3 seconds)
+  // Play Cricket Sound using Web Audio API (Approx 6 seconds, Louder)
   const playCricketSound = () => {
     try {
       if (!audioContextRef.current) {
@@ -124,7 +124,8 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
         
         // Short envelope: Attack -> Decay
         gain.gain.setValueAtTime(0, time);
-        gain.gain.linearRampToValueAtTime(0.1, time + 0.01); // Quick attack
+        // INCREASED VOLUME: 0.1 -> 0.8
+        gain.gain.linearRampToValueAtTime(0.8, time + 0.01); // Quick attack
         gain.gain.linearRampToValueAtTime(0, time + 0.04); // Quick decay
         
         osc.start(time);
@@ -139,9 +140,9 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
          }
       };
 
-      // Play pattern: 5 Chirps spaced 0.7s apart
-      // 0s, 0.7s, 1.4s, 2.1s, 2.8s -> finishes around 3s
-      const intervals = [0, 0.7, 1.4, 2.1, 2.8];
+      // Play pattern: Chirps spaced 0.7s apart
+      // Extended to cover ~6 seconds
+      const intervals = [0, 0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9, 5.6];
       intervals.forEach(timeOffset => playChirp(now + timeOffset));
       
     } catch (e) {
