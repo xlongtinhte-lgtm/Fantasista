@@ -1,10 +1,14 @@
+
 import React from 'react';
 import { Formula } from '../types';
-import { Heart, Shield, User, Users, Zap, Clock, ChevronRight } from 'lucide-react';
+import { Heart, Shield, User, Users, Zap, Clock, ChevronRight, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface FormulaCardProps {
   formula: Formula;
   onClick: () => void;
+  isAdminMode?: boolean;
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
 }
 
 const getIcon = (type: string) => {
@@ -24,36 +28,62 @@ const formatDuration = (seconds: number) => {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-const FormulaCard: React.FC<FormulaCardProps> = ({ formula, onClick }) => {
+const FormulaCard: React.FC<FormulaCardProps> = ({ formula, onClick, isAdminMode, onMoveUp, onMoveDown }) => {
   return (
-    <button 
-      onClick={onClick}
-      className="group flex flex-col items-start text-left w-full bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-pink-500/30 rounded-2xl p-5 transition-all duration-300 hover:shadow-xl hover:shadow-pink-900/10 relative overflow-hidden"
-    >
-      <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
-        <div className="flex items-center gap-1 text-xs font-mono text-slate-400 bg-slate-950/50 px-2 py-1 rounded-md">
-            <Clock size={12} />
-            {formatDuration(formula.durationSeconds)}
+    <div className="relative group">
+      <button 
+        onClick={onClick}
+        className="flex flex-col items-start text-left w-full bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-pink-500/30 rounded-2xl p-5 transition-all duration-300 hover:shadow-xl hover:shadow-pink-900/10 overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-1 text-xs font-mono text-slate-400 bg-slate-950/50 px-2 py-1 rounded-md">
+              <Clock size={12} />
+              {formatDuration(formula.durationSeconds)}
+          </div>
         </div>
-      </div>
 
-      <div className="mb-4 p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:border-pink-500/20 group-hover:scale-110 transition-all duration-300">
-        {getIcon(formula.iconType)}
-      </div>
+        <div className="mb-4 p-3 rounded-xl bg-slate-950 border border-slate-800 group-hover:border-pink-500/20 group-hover:scale-110 transition-all duration-300">
+          {getIcon(formula.iconType)}
+        </div>
 
-      <h3 className="text-lg font-bold text-slate-100 mb-1 leading-tight group-hover:text-pink-400 transition-colors">
-        {formula.title}
-      </h3>
-      
-      <p className="text-sm text-slate-500 line-clamp-2 mb-4">
-        {formula.subtitle}
-      </p>
+        <h3 className="text-lg font-bold text-slate-100 mb-1 leading-tight group-hover:text-pink-400 transition-colors">
+          {formula.title}
+        </h3>
+        
+        <p className="text-sm text-slate-500 line-clamp-2 mb-4">
+          {formula.subtitle}
+        </p>
 
-      <div className="mt-auto w-full flex items-center justify-between text-xs font-medium text-pink-500/80 uppercase tracking-wider">
-        <span>Start Practice</span>
-        <ChevronRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
-      </div>
-    </button>
+        <div className="mt-auto w-full flex items-center justify-between text-xs font-medium text-pink-500/80 uppercase tracking-wider">
+          <span>Bắt đầu thực hành</span>
+          <ChevronRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
+        </div>
+      </button>
+
+      {/* Admin Reorder Controls */}
+      {isAdminMode && (
+        <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+          {onMoveUp && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); onMoveUp(); }}
+              className="p-1.5 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-full border border-slate-700 shadow-xl transition-all"
+              title="Di chuyển lên"
+            >
+              <ArrowUp size={14} />
+            </button>
+          )}
+          {onMoveDown && (
+            <button 
+              onClick={(e) => { e.stopPropagation(); onMoveDown(); }}
+              className="p-1.5 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-full border border-slate-700 shadow-xl transition-all"
+              title="Di chuyển xuống"
+            >
+              <ArrowDown size={14} />
+            </button>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 

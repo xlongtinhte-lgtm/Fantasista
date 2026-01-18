@@ -52,11 +52,28 @@ const App: React.FC = () => {
     setView('edit');
   };
 
-  const handleSaveFormula = (updated: Formula) => {
-    const newFormulas = formulas.map(f => f.id === updated.id ? updated : f);
+  const saveToStorage = (newFormulas: Formula[]) => {
     setFormulas(newFormulas);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newFormulas));
+  };
+
+  const handleSaveFormula = (updated: Formula) => {
+    const newFormulas = formulas.map(f => f.id === updated.id ? updated : f);
+    saveToStorage(newFormulas);
     setView('detail');
+  };
+
+  const handleMoveFormula = (id: string, direction: 'up' | 'down') => {
+    const index = formulas.findIndex(f => f.id === id);
+    if (index === -1) return;
+
+    const newFormulas = [...formulas];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+
+    if (targetIndex >= 0 && targetIndex < newFormulas.length) {
+      [newFormulas[index], newFormulas[targetIndex]] = [newFormulas[targetIndex], newFormulas[index]];
+      saveToStorage(newFormulas);
+    }
   };
 
   const handleTimerComplete = () => {
@@ -115,8 +132,8 @@ const App: React.FC = () => {
           <div className="flex items-center gap-3">
               <button
                 onClick={() => setIsAdminMode(!isAdminMode)}
-                className={`p-1.5 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-500 hover:text-slate-300'}`}
-                title="Chế độ chỉnh sửa (Admin)"
+                className={`p-1.5 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20 shadow-[0_0_10px_rgba(219,39,119,0.3)]' : 'text-slate-500 hover:text-slate-300'}`}
+                title="Chế độ quản trị (Sắp xếp & Sửa)"
               >
                 <Settings size={18} />
               </button>
@@ -133,14 +150,19 @@ const App: React.FC = () => {
               <div className="animate-fade-in p-6">
                 <div className="text-center mb-8">
                   <h1 className="text-2xl font-bold text-slate-200 mb-2">Thư viện công thức</h1>
-                  <p className="text-slate-500 text-sm">Chọn một công thức để bắt đầu thực hành.</p>
+                  <p className="text-slate-500 text-sm">
+                    {isAdminMode ? 'Bạn đang ở chế độ chỉnh sửa. Có thể thay đổi thứ tự công thức.' : 'Chọn một công thức để bắt đầu thực hành.'}
+                  </p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {formulas.map(formula => (
+                  {formulas.map((formula, index) => (
                     <FormulaCard 
                       key={formula.id} 
                       formula={formula} 
                       onClick={() => handleSelectFormula(formula.id)} 
+                      isAdminMode={isAdminMode}
+                      onMoveUp={index > 0 ? () => handleMoveFormula(formula.id, 'up') : undefined}
+                      onMoveDown={index < formulas.length - 1 ? () => handleMoveFormula(formula.id, 'down') : undefined}
                     />
                   ))}
                 </div>
