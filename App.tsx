@@ -7,7 +7,7 @@ import FormulaCard from './components/FormulaCard';
 import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw, CheckCircle2, CloudOff, Wifi, CloudDownload } from 'lucide-react';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw, CheckCircle2, CloudOff, CloudDownload } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -20,12 +20,10 @@ const App: React.FC = () => {
   const [stopSignal, setStopSignal] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   
-  // Offline functionality states
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isOfflineReady, setIsOfflineReady] = useState(false);
 
   useEffect(() => {
-    // Check initial formulas
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -37,25 +35,30 @@ const App: React.FC = () => {
       setFormulas(DEFAULT_FORMULAS);
     }
 
-    // Monitor Online/Offline status
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Check Service Worker status for "Offline Ready"
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.ready.then((registration) => {
-        // If there's an active controller, it's likely already cached
+      // Hỏi Service Worker về trạng thái cache sau 2 giây
+      setTimeout(() => {
         if (navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage('CHECK_CACHE_STATUS');
+        }
+      }, 2000);
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data && (event.data.type === 'CACHE_COMPLETED' || event.data.exists)) {
           setIsOfflineReady(true);
         }
-      });
+      };
+      navigator.serviceWorker.addEventListener('message', handleMessage);
 
-      // Listen for messages from SW if needed, or check registration status
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
+      // Nếu đã có sẵn controller thì khả năng cao là đã offline ready
+      if (navigator.serviceWorker.controller) {
         setIsOfflineReady(true);
-      });
+      }
     }
 
     return () => {
@@ -107,33 +110,18 @@ const App: React.FC = () => {
   };
 
   const handleUpdateApp = async () => {
-    const confirmUpdate = window.confirm(
-      "Bạn có muốn cập nhật ứng dụng? Thao tác này sẽ xóa cache, reset dữ liệu về mặc định và tải lại phiên bản mới nhất."
-    );
-    
+    const confirmUpdate = window.confirm("Cập nhật ứng dụng và xóa dữ liệu cũ?");
     if (!confirmUpdate) return;
-
     setIsUpdating(true);
-    
     try {
       if ('caches' in window) {
         const cacheNames = await caches.keys();
         await Promise.all(cacheNames.map(name => caches.delete(name)));
       }
-
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        for (let registration of registrations) {
-          await registration.unregister();
-        }
-      }
-
       localStorage.removeItem(STORAGE_KEY);
       window.location.reload();
     } catch (error) {
-      console.error("Update failed:", error);
       setIsUpdating(false);
-      alert("Cập nhật thất bại. Vui lòng thử lại sau.");
     }
   };
 
@@ -165,7 +153,7 @@ const App: React.FC = () => {
                 </div>
                 <div className="flex flex-col items-start leading-none">
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">NLG</span>
-                  {/* Status Indicator */}
+                  
                   <div className="flex items-center gap-1 mt-0.5">
                     {isOfflineReady ? (
                       <div className="flex items-center gap-1 text-[8px] font-bold text-emerald-400 uppercase bg-emerald-950/40 px-1 rounded ring-1 ring-emerald-500/20 shadow-[0_0_8px_rgba(52,211,153,0.2)]">
@@ -204,37 +192,35 @@ const App: React.FC = () => {
                 onClick={handleUpdateApp} 
                 disabled={isUpdating}
                 className={`p-2 rounded-full text-slate-500 hover:text-white hover:bg-slate-800/50 transition-all ${isUpdating ? 'animate-spin text-pink-500' : ''}`}
-                title="Cập nhật ứng dụng & Xóa cache"
+                title="Cập nhật"
               >
                 <RefreshCw size={20} />
               </button>
-              {isAdminMode && view === 'grid' && (
-                <button 
-                  onClick={() => setView('reorder')} 
-                  className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg border border-slate-700 transition-all"
-                >
-                  <ListOrdered size={18} />
-                  Sắp xếp
-                </button>
-              )}
-              <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20 shadow-[0_0_10px_rgba(219,39,119,0.3)]' : 'text-slate-500 hover:text-slate-300'}`} title="Chế độ quản trị">
+              <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-500'}`}>
                 <Settings size={20} />
               </button>
           </div>
         </div>
       </header>
 
-      <main className="flex-grow overflow-y-auto scroll-smooth bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-slate-950">
+      <main className="flex-grow overflow-y-auto bg-slate-950">
         <div className="max-w-4xl mx-auto min-h-full pb-10">
             {view === 'grid' && (
               <div className="animate-fade-in p-6">
                 <div className="text-center mb-8">
                   <h1 className="text-2xl font-bold text-slate-200 mb-2">Thư viện công thức</h1>
-                  <p className="text-slate-500 text-sm">{isAdminMode ? 'Bạn đang ở chế độ chỉnh sửa. Nhấn nút "Sắp xếp" để thay đổi thứ tự.' : 'Chọn một công thức để bắt đầu thực hành.'}</p>
+                  <p className="text-slate-500 text-sm">Chọn một công thức để bắt đầu thực hành.</p>
                 </div>
+                {isAdminMode && (
+                   <div className="mb-6 flex justify-center">
+                     <button onClick={() => setView('reorder')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg border border-slate-700">
+                       <ListOrdered size={18} /> Sắp xếp công thức
+                     </button>
+                   </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {formulas.map((formula) => (
-                    <FormulaCard key={formula.id} formula={formula} onClick={() => handleSelectFormula(formula.id)} isAdminMode={false} />
+                    <FormulaCard key={formula.id} formula={formula} onClick={() => handleSelectFormula(formula.id)} />
                   ))}
                 </div>
               </div>
@@ -242,31 +228,30 @@ const App: React.FC = () => {
 
             {view === 'detail' && currentFormula && (
               <div className="animate-fade-in flex flex-col">
-                <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/50 shadow-2xl">
-                   <div className="max-w-4xl mx-auto px-4 md:px-6 py-2">
-                     <TimerWidget initialDuration={currentFormula.durationSeconds} autoStart={false} onComplete={handleTimerComplete} forceStopSignal={stopSignal} />
+                <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/50">
+                   <div className="max-w-4xl mx-auto px-4 py-2">
+                     <TimerWidget initialDuration={currentFormula.durationSeconds} onComplete={handleTimerComplete} forceStopSignal={stopSignal} />
                    </div>
                 </div>
                 <div className="p-4 md:p-6 space-y-6">
                   <div className="bg-slate-900/50 rounded-2xl p-4 md:p-8 border border-slate-800 shadow-xl relative">
                     {isAdminMode && (
-                      <button onClick={handleEdit} className="absolute top-4 right-4 p-2 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-lg transition-colors flex items-center gap-2 text-sm">
-                        <Edit size={16} /> Sửa nội dung
+                      <button onClick={handleEdit} className="absolute top-4 right-4 p-2 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-lg">
+                        <Edit size={16} />
                       </button>
                     )}
-                    <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-slate-200 mb-2">{currentFormula.title}</h2>
-                    <p className="text-pink-400/80 font-medium text-base md:text-lg mb-6 border-b border-white/5 pb-4">{currentFormula.subtitle}</p>
+                    <h2 className="text-2xl md:text-3xl font-bold text-pink-200 mb-2">{currentFormula.title}</h2>
+                    <p className="text-pink-400/80 font-medium mb-6 border-b border-white/5 pb-4">{currentFormula.subtitle}</p>
                     <div className="space-y-6">
-                      <h3 className="text-lg font-semibold text-slate-200 uppercase tracking-wide">Hướng dẫn thực hiện:</h3>
                       {currentFormula.steps.map((step, idx) => {
                         const isWarning = step.startsWith('CẢNH BÁO');
                         const isNote = step.startsWith('LƯU Ý') || step.startsWith('***');
                         return (
-                          <div key={idx} className={`flex gap-4 ${isWarning || isNote ? 'bg-slate-800/60 p-5 rounded-xl border border-white/5' : 'py-2'}`}>
+                          <div key={idx} className={`flex gap-4 ${isWarning || isNote ? 'bg-slate-800/60 p-5 rounded-xl' : 'py-2'}`}>
                             {!isWarning && !isNote && (
-                              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-pink-900/30 text-pink-400 border border-pink-500/20 flex items-center justify-center font-bold text-lg shadow-inner mt-1">{idx + 1}</div>
+                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-pink-900/30 text-pink-400 flex items-center justify-center font-bold">{idx + 1}</div>
                             )}
-                            <p className={`leading-relaxed whitespace-pre-line ${isWarning ? 'text-red-300 font-bold text-base md:text-lg' : (isNote ? 'text-amber-200 font-medium text-base md:text-lg' : 'text-slate-200 text-lg md:text-xl font-medium tracking-wide')}`}>{step}</p>
+                            <p className={`leading-relaxed whitespace-pre-line ${isWarning ? 'text-red-300 font-bold' : (isNote ? 'text-amber-200' : 'text-slate-200 text-lg')}`}>{step}</p>
                           </div>
                         );
                       })}

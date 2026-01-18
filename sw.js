@@ -1,86 +1,71 @@
 
-const CACHE_NAME = 'nlg-practice-v2-full-offline';
+const CACHE_NAME = 'nlg-offline-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './index.tsx',
   './App.tsx',
   './types.ts',
+  './metadata.json',
   './services/defaultData.ts',
-  './services/geminiService.ts',
   './components/TimerWidget.tsx',
   './components/FormulaCard.tsx',
   './components/FormulaEditor.tsx',
   './components/CompletionModal.tsx',
   './components/ReorderList.tsx',
-  './components/ReaderBar.tsx',
-  './metadata.json',
-  
-  // CDN Assets
-  'https://cdn.tailwindcss.com',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-  'https://aistudiocdn.com/react@^19.2.1/',
-  'https://aistudiocdn.com/react@^19.2.1',
-  'https://aistudiocdn.com/react-dom@^19.2.1/',
-  'https://aistudiocdn.com/lucide-react@^0.556.0',
-  
-  // Images & Visuals
-  'https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?auto=format&fit=crop&w=800&q=80'
+  './components/ReaderBar.tsx'
 ];
 
-// Cài đặt và Cache tất cả tài nguyên
+// Cài đặt
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('NLG Practice: Caching all assets for offline use');
-      return cache.addAll(ASSETS_TO_CACHE);
+      console.log('NLG SW: Đang tải cache...');
+      return cache.addAll(ASSETS_TO_CACHE).catch(err => {
+        console.warn('NLG SW: Một số tệp không thể cache, nhưng vẫn tiếp tục...', err);
+        // Fallback: Thử tải từng cái nếu addAll thất bại
+        return Promise.all(ASSETS_TO_CACHE.map(url => {
+          return fetch(url).then(res => cache.put(url, res)).catch(() => {});
+        }));
+      });
     })
   );
-  self.skipWaiting();
 });
 
-// Làm sạch cache cũ khi có version mới
+// Kích hoạt
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            console.log('NLG Practice: Clearing old cache', cache);
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map(k => k !== CACHE_NAME && caches.delete(k)));
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Xử lý yêu cầu tài nguyên
+// Xử lý thông điệp từ App
+self.addEventListener('message', (event) => {
+  if (event.data === 'CHECK_CACHE_STATUS') {
+    caches.has(CACHE_NAME).then(exists => {
+      event.source.postMessage({ type: 'CACHE_STATUS', exists });
+    });
+  }
+});
+
+// Chặn bắt yêu cầu (Fetch)
 self.addEventListener('fetch', (event) => {
-  // Bỏ qua các yêu cầu không phải GET hoặc chrome-extension
-  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
-
+  if (event.request.method !== 'GET') return;
+  
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      // Nếu có trong cache, trả về ngay (Stale-While-Revalidate)
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
-        // Cập nhật lại cache cho lần sau
-        if (networkResponse && networkResponse.status === 200) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+    caches.match(event.request).then((cached) => {
+      return cached || fetch(event.request).then(response => {
+        if (response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
         }
-        return networkResponse;
+        return response;
       }).catch(() => {
-        // Nếu mạng lỗi và không có trong cache, trả về trang chủ (nếu là điều hướng)
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
-        }
+        if (event.request.mode === 'navigate') return caches.match('./index.html');
       });
-
-      return cachedResponse || fetchPromise;
     })
   );
 });
