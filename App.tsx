@@ -7,7 +7,7 @@ import FormulaCard from './components/FormulaCard';
 import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw } from 'lucide-react';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw, CheckCircle2, CloudOff, Wifi, CloudDownload } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -19,8 +19,13 @@ const App: React.FC = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [stopSignal, setStopSignal] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
+  
+  // Offline functionality states
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isOfflineReady, setIsOfflineReady] = useState(false);
 
   useEffect(() => {
+    // Check initial formulas
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -31,6 +36,32 @@ const App: React.FC = () => {
     } else {
       setFormulas(DEFAULT_FORMULAS);
     }
+
+    // Monitor Online/Offline status
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    // Check Service Worker status for "Offline Ready"
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((registration) => {
+        // If there's an active controller, it's likely already cached
+        if (navigator.serviceWorker.controller) {
+          setIsOfflineReady(true);
+        }
+      });
+
+      // Listen for messages from SW if needed, or check registration status
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        setIsOfflineReady(true);
+      });
+    }
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const handleSelectFormula = (id: string) => {
@@ -132,10 +163,29 @@ const App: React.FC = () => {
                    <div className="absolute inset-0 bg-pink-500 blur-lg opacity-40"></div>
                    <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={24} />
                 </div>
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">NLG</span>
+                <div className="flex flex-col items-start leading-none">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">NLG</span>
+                  {/* Status Indicator */}
+                  <div className="flex items-center gap-1 mt-0.5">
+                    {isOfflineReady ? (
+                      <div className="flex items-center gap-1 text-[8px] font-bold text-emerald-400 uppercase bg-emerald-950/40 px-1 rounded ring-1 ring-emerald-500/20 shadow-[0_0_8px_rgba(52,211,153,0.2)]">
+                        <CheckCircle2 size={8} /> <span>Đã lưu Offline</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 text-[8px] font-bold text-amber-400 uppercase bg-amber-950/40 px-1 rounded animate-pulse">
+                        <CloudDownload size={8} /> <span>Đang lưu...</span>
+                      </div>
+                    )}
+                    {!isOnline && (
+                      <div className="flex items-center gap-1 text-[8px] font-bold text-slate-300 uppercase bg-slate-800 px-1 rounded">
+                        <CloudOff size={8} /> <span>Ngoại tuyến</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
               
-              <div className="flex flex-col justify-center animate-fade-in">
+              <div className="flex flex-col justify-center animate-fade-in ml-1">
                 <p className="text-[9px] md:text-[11px] leading-[1.2] font-bold text-pink-400 tracking-wide uppercase drop-shadow-[0_0_8px_rgba(244,114,182,0.4)]">
                   NĂNG LƯỢNG TÌNH THƯƠNG TRÍ TUỆ HIỂU BIẾT TỪ TRÁI TIM LINH HỒN
                 </p>
