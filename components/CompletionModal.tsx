@@ -22,36 +22,30 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
       
       const ctx = audioContextRef.current;
       if (!ctx) return;
-      
-      if (ctx.state === 'suspended') {
-        ctx.resume();
-      }
+      if (ctx.state === 'suspended') ctx.resume();
 
       const now = ctx.currentTime;
       
-      // Tạo âm thanh "Ding-Ding" vui tai khi hoàn thành
-      const playTone = (freq: number, start: number, duration: number) => {
+      const playTone = (freq: number, start: number, duration: number, type: OscillatorType = 'sine') => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        
-        osc.type = 'sine';
+        osc.type = type;
         osc.frequency.setValueAtTime(freq, start);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.2, start + duration);
-        
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.05, start + duration);
         gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(0.3, start + 0.05);
+        gain.gain.linearRampToValueAtTime(0.4, start + 0.02);
         gain.gain.exponentialRampToValueAtTime(0.01, start + duration);
-        
         osc.connect(gain);
         gain.connect(ctx.destination);
-        
         osc.start(start);
         osc.stop(start + duration);
       };
 
-      playTone(523.25, now, 0.3); // Nốt Đô (C5)
-      playTone(659.25, now + 0.1, 0.4); // Nốt Mi (E5)
-      playTone(1046.50, now + 0.2, 0.6); // Nốt Đô (C6)
+      // Âm thanh chúc mừng hân hoan (C5-E5-G5-C6)
+      playTone(523.25, now, 0.2); 
+      playTone(659.25, now + 0.1, 0.2); 
+      playTone(783.99, now + 0.2, 0.2); 
+      playTone(1046.50, now + 0.3, 0.6); 
     } catch (e) {
       console.error("Audio error in modal:", e);
     }
@@ -59,8 +53,8 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
 
   const handleFinalConfirm = () => {
     playSuccessSound();
-    // Chờ một chút để âm thanh bắt đầu rồi mới đóng modal
-    setTimeout(onClose, 100);
+    // Gửi tín hiệu đóng modal, App sẽ gửi tiếp tín hiệu dừng alarm cho Timer qua state
+    setTimeout(onClose, 200);
   };
 
   return (
@@ -84,18 +78,10 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
         .animate-border-flash { animation: border-flash 0.4s infinite; }
       `}} />
 
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 backdrop-blur-md animate-flash-bg cursor-pointer" 
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 backdrop-blur-md animate-flash-bg cursor-pointer" onClick={handleFinalConfirm} />
       
-      {/* Modal Container */}
       <div className="relative bg-slate-900 border-8 animate-border-flash rounded-[40px] p-10 max-w-sm w-full z-50 animate-modal-pop">
-        <button 
-          onClick={onClose}
-          className="absolute top-6 right-6 text-slate-500 hover:text-white bg-slate-800 p-2 rounded-full transition-colors"
-        >
+        <button onClick={handleFinalConfirm} className="absolute top-6 right-6 text-slate-500 hover:text-white bg-slate-800 p-2 rounded-full transition-colors">
           <X size={24} />
         </button>
 
@@ -108,9 +94,7 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
           
           <div className="bg-slate-800/80 rounded-2xl p-4 mb-8 w-full border border-slate-700">
             <p className="text-slate-400 text-sm uppercase tracking-widest font-bold mb-2">Bài tập hoàn thành:</p>
-            <p className="text-yellow-400 font-black text-xl leading-tight">
-              {title}
-            </p>
+            <p className="text-yellow-400 font-black text-xl leading-tight">{title}</p>
           </div>
 
           <button
@@ -119,10 +103,7 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
           >
             TUYỆT VỜI
           </button>
-          
-          <p className="mt-6 text-slate-500 text-sm font-medium animate-pulse">
-            Nhấn để quay lại màn hình chính
-          </p>
+          <p className="mt-6 text-slate-500 text-sm font-medium animate-pulse">Nhấn để hoàn tất</p>
         </div>
       </div>
     </div>
