@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { X, Bell, CheckCircle } from 'lucide-react';
+import React, { useRef } from 'react';
+import { X, Bell } from 'lucide-react';
 
 interface CompletionModalProps {
   isOpen: boolean;
@@ -9,7 +9,59 @@ interface CompletionModalProps {
 }
 
 const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, title }) => {
+  const audioContextRef = useRef<AudioContext | null>(null);
+
   if (!isOpen) return null;
+
+  const playSuccessSound = () => {
+    try {
+      const Ctx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!audioContextRef.current && Ctx) {
+        audioContextRef.current = new Ctx();
+      }
+      
+      const ctx = audioContextRef.current;
+      if (!ctx) return;
+      
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const now = ctx.currentTime;
+      
+      // Tạo âm thanh "Ding-Ding" vui tai khi hoàn thành
+      const playTone = (freq: number, start: number, duration: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, start);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.2, start + duration);
+        
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.3, start + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, start + duration);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start(start);
+        osc.stop(start + duration);
+      };
+
+      playTone(523.25, now, 0.3); // Nốt Đô (C5)
+      playTone(659.25, now + 0.1, 0.4); // Nốt Mi (E5)
+      playTone(1046.50, now + 0.2, 0.6); // Nốt Đô (C6)
+    } catch (e) {
+      console.error("Audio error in modal:", e);
+    }
+  };
+
+  const handleFinalConfirm = () => {
+    playSuccessSound();
+    // Chờ một chút để âm thanh bắt đầu rồi mới đóng modal
+    setTimeout(onClose, 100);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -62,7 +114,7 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
           </div>
 
           <button
-            onClick={onClose}
+            onClick={handleFinalConfirm}
             className="w-full py-5 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white rounded-2xl font-black text-2xl transition-all shadow-[0_10px_30px_rgba(220,38,38,0.5)] active:scale-95 border-b-8 border-red-800 active:border-b-0"
           >
             TUYỆT VỜI
