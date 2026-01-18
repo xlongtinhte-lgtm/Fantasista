@@ -41,35 +41,32 @@ const App: React.FC = () => {
     window.addEventListener('offline', handleOffline);
 
     if ('serviceWorker' in navigator) {
-      // Hỏi Service Worker về trạng thái cache ngay lập tức
-      const checkCache = () => {
-        if (navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage('CHECK_CACHE_STATUS');
-        }
-      };
+      // 1. Kiểm tra controller ngay lập tức
+      if (navigator.serviceWorker.controller) {
+        setIsOfflineReady(true);
+        navigator.serviceWorker.controller.postMessage('CHECK_CACHE_STATUS');
+      }
 
-      // Kiểm tra sau 1s và 3s để đảm bảo nhận được phản hồi
-      setTimeout(checkCache, 1000);
-      setTimeout(checkCache, 3000);
-
+      // 2. Lắng nghe tin nhắn
       const handleMessage = (event: MessageEvent) => {
-        if (event.data && (
-          event.data.type === 'CACHE_COMPLETED' || 
-          event.data.type === 'CACHE_STATUS' || 
-          event.data.exists
-        )) {
-          if (event.data.exists !== false) {
-            setIsOfflineReady(true);
-          }
+        if (event.data && (event.data.type === 'CACHE_COMPLETED' || event.data.type === 'CACHE_STATUS')) {
+          setIsOfflineReady(true);
         }
       };
-      
       navigator.serviceWorker.addEventListener('message', handleMessage);
 
-      // Nếu controller đã tồn tại và active, có khả năng cao là đã offline ready
-      if (navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === 'activated') {
-        setIsOfflineReady(true);
-      }
+      // 3. Kiểm tra định kỳ (fallback)
+      const interval = setInterval(() => {
+        if (navigator.serviceWorker.controller) {
+          setIsOfflineReady(true);
+          clearInterval(interval);
+        }
+      }, 2000);
+
+      return () => {
+        navigator.serviceWorker.removeEventListener('message', handleMessage);
+        clearInterval(interval);
+      };
     }
 
     return () => {

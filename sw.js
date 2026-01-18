@@ -1,21 +1,9 @@
 
-const CACHE_NAME = 'nlg-offline-v5';
+const CACHE_NAME = 'nlg-stable-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './index.tsx',
-  './App.tsx',
-  './types.ts',
-  './metadata.json',
-  './services/defaultData.ts',
-  './services/geminiService.ts',
-  './components/TimerWidget.tsx',
-  './components/FormulaCard.tsx',
-  './components/FormulaEditor.tsx',
-  './components/CompletionModal.tsx',
-  './components/ReorderList.tsx',
-  './components/ReaderBar.tsx',
-  // Thêm các thư viện CDN quan trọng để có thể chạy offline hoàn toàn
+  './index.tsx', // Entry point chính
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
   'https://aistudiocdn.com/react@^19.2.1',
@@ -23,29 +11,29 @@ const ASSETS_TO_CACHE = [
   'https://aistudiocdn.com/lucide-react@^0.556.0'
 ];
 
-// Cài đặt và lưu cache
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('NLG SW: Đang khởi tạo bộ nhớ đệm...');
-      return cache.addAll(ASSETS_TO_CACHE).then(() => {
-        console.log('NLG SW: Đã lưu toàn bộ dữ liệu offline!');
-        // Thông báo cho tất cả các tab đang mở
+      console.log('NLG SW: Khởi tạo bộ nhớ đệm an toàn...');
+      // Thay vì addAll, ta add từng cái để cái nào lỗi (404) thì bỏ qua, không làm treo cả quá trình
+      const cachePromises = ASSETS_TO_CACHE.map(url => {
+        return fetch(url).then(response => {
+          if (response.ok) return cache.put(url, response);
+          return Promise.resolve();
+        }).catch(() => Promise.resolve());
+      });
+      
+      return Promise.all(cachePromises).then(() => {
+        console.log('NLG SW: Đã lưu các tệp quan trọng!');
         return self.clients.matchAll().then(clients => {
           clients.forEach(client => client.postMessage({ type: 'CACHE_COMPLETED', exists: true }));
         });
-      }).catch(err => {
-        console.warn('NLG SW: Một số tệp không thể cache trực tiếp, thử fallback...', err);
-        return Promise.all(ASSETS_TO_CACHE.map(url => {
-          return fetch(url).then(res => cache.put(url, res)).catch(() => {});
-        }));
       });
     })
   );
 });
 
-// Kích hoạt và dọn dẹp cache cũ
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -54,7 +42,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Xử lý thông điệp từ App
 self.addEventListener('message', (event) => {
   if (event.data === 'CHECK_CACHE_STATUS') {
     caches.has(CACHE_NAME).then(exists => {
@@ -63,13 +50,12 @@ self.addEventListener('message', (event) => {
   }
 });
 
-// Chặn bắt yêu cầu (Fetch) - Chiến lược Cache First cho assets, Network First cho index
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      const fetchPromise = fetch(event.request).then(response => {
+      return cached || fetch(event.request).then(response => {
         if (response.status === 200) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
@@ -79,8 +65,6 @@ self.addEventListener('fetch', (event) => {
         if (event.request.mode === 'navigate') return caches.match('./index.html');
         return null;
       });
-
-      return cached || fetchPromise;
     })
   );
 });
