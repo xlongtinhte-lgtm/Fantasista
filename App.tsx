@@ -75,7 +75,6 @@ const App: React.FC = () => {
     setStopSignal(s => s + 1);
   };
 
-  // Chức năng Xóa Cache và Cập nhật ứng dụng
   const handleUpdateApp = async () => {
     const confirmUpdate = window.confirm(
       "Bạn có muốn cập nhật ứng dụng? Thao tác này sẽ xóa cache, reset dữ liệu về mặc định và tải lại phiên bản mới nhất."
@@ -86,13 +85,11 @@ const App: React.FC = () => {
     setIsUpdating(true);
     
     try {
-      // 1. Xóa toàn bộ Cache Storage
       if ('caches' in window) {
         const cacheNames = await caches.keys();
         await Promise.all(cacheNames.map(name => caches.delete(name)));
       }
 
-      // 2. Hủy đăng ký Service Workers
       if ('serviceWorker' in navigator) {
         const registrations = await navigator.serviceWorker.getRegistrations();
         for (let registration of registrations) {
@@ -100,10 +97,7 @@ const App: React.FC = () => {
         }
       }
 
-      // 3. Xóa dữ liệu Local Storage để "lưu mới"
       localStorage.removeItem(STORAGE_KEY);
-
-      // 4. Buộc tải lại trang từ server
       window.location.reload();
     } catch (error) {
       console.error("Update failed:", error);
@@ -116,48 +110,65 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-950 selection:bg-pink-500/30 selection:text-pink-100 font-inter">
-      <header className="flex-shrink-0 h-14 relative overflow-hidden border-b border-white/10 z-30 sticky top-0 bg-slate-950">
+      <header className="flex-shrink-0 min-h-[70px] md:min-h-[90px] relative overflow-hidden border-b border-white/10 z-30 sticky top-0 bg-slate-950 flex flex-col justify-center">
         <div className="absolute inset-0 z-0 opacity-40">
            <video autoPlay loop muted playsInline className="w-full h-full object-cover" poster="https://images.unsplash.com/photo-1534796636912-3b95b3ab5980?auto=format&fit=crop&w=800&q=80">
              <source src="https://cdn.pixabay.com/video/2019/04/23/23011-332483109_tiny.mp4" type="video/mp4" />
            </video>
            <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
         </div>
-        <div className="relative z-10 flex items-center justify-between px-4 h-full">
-          <div className="flex items-center gap-3">
+        
+        <div className="relative z-10 flex items-center justify-between px-4 w-full">
+          <div className="flex items-center gap-3 md:gap-6 flex-grow overflow-hidden py-2">
             {view !== 'grid' && (
-              <button onClick={handleBack} className="p-1.5 rounded-full hover:bg-slate-800/50 text-slate-300 hover:text-white transition-colors border border-transparent hover:border-slate-600">
-                <ArrowLeft size={20} />
+              <button onClick={handleBack} className="flex-shrink-0 p-2 rounded-full hover:bg-slate-800/50 text-slate-300 hover:text-white transition-colors border border-transparent hover:border-slate-600">
+                <ArrowLeft size={24} />
               </button>
             )}
-            <div className="flex items-center gap-2 text-stone-100 font-bold text-lg tracking-tight cursor-pointer" onClick={() => handleBack()}>
-              <div className="relative">
-                 <div className="absolute inset-0 bg-pink-500 blur-lg opacity-40"></div>
-                 <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={20} />
+            
+            <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4 overflow-hidden" onClick={() => handleBack()}>
+              <div className="flex items-center gap-2 flex-shrink-0 cursor-pointer">
+                <div className="relative">
+                   <div className="absolute inset-0 bg-pink-500 blur-lg opacity-40"></div>
+                   <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={24} />
+                </div>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">NLG</span>
               </div>
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300">NLG Practice</span>
+              
+              <div className="flex flex-col justify-center animate-fade-in">
+                <p className="text-[9px] md:text-[11px] leading-[1.2] font-bold text-pink-400 tracking-wide uppercase drop-shadow-[0_0_8px_rgba(244,114,182,0.4)]">
+                  NĂNG LƯỢNG TÌNH THƯƠNG TRÍ TUỆ HIỂU BIẾT TỪ TRÁI TIM LINH HỒN
+                </p>
+                <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-300/80 uppercase tracking-wider">
+                  CỦA ĐẤNG TẠO HÓA BAN NLG LINH QUANG VŨ TRỤ KỶ NGUYÊN MỚI
+                </p>
+                <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-200/60 uppercase tracking-widest italic">
+                  CHO TOÀN THỂ NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT
+                </p>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-2 flex-shrink-0 ml-2">
               <button 
                 onClick={handleUpdateApp} 
                 disabled={isUpdating}
-                className={`p-1.5 rounded-full text-slate-500 hover:text-white hover:bg-slate-800/50 transition-all ${isUpdating ? 'animate-spin text-pink-500' : ''}`}
+                className={`p-2 rounded-full text-slate-500 hover:text-white hover:bg-slate-800/50 transition-all ${isUpdating ? 'animate-spin text-pink-500' : ''}`}
                 title="Cập nhật ứng dụng & Xóa cache"
               >
-                <RefreshCw size={18} />
+                <RefreshCw size={20} />
               </button>
               {isAdminMode && view === 'grid' && (
                 <button 
                   onClick={() => setView('reorder')} 
-                  className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg border border-slate-700 transition-all"
+                  className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg border border-slate-700 transition-all"
                 >
-                  <ListOrdered size={16} />
+                  <ListOrdered size={18} />
                   Sắp xếp
                 </button>
               )}
-              <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-1.5 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20 shadow-[0_0_10px_rgba(219,39,119,0.3)]' : 'text-slate-500 hover:text-slate-300'}`} title="Chế độ quản trị">
-                <Settings size={18} />
+              <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20 shadow-[0_0_10px_rgba(219,39,119,0.3)]' : 'text-slate-500 hover:text-slate-300'}`} title="Chế độ quản trị">
+                <Settings size={20} />
               </button>
           </div>
         </div>

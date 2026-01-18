@@ -6,7 +6,7 @@ interface TimerWidgetProps {
   initialDuration?: number;
   autoStart?: boolean;
   onComplete?: () => void;
-  forceStopSignal?: number; // Prop mới để dừng âm thanh từ bên ngoài
+  forceStopSignal?: number;
 }
 
 const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoStart = false, onComplete, forceStopSignal = 0 }) => {
@@ -15,18 +15,22 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   const [totalTime, setTotalTime] = useState(initialDuration);
   const [isFinished, setIsFinished] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const wakeLockRef = useRef<any>(null);
   const stopAlarmRef = useRef<boolean>(false);
+  const prevDurationRef = useRef<number>(initialDuration);
   
+  // Chỉ reset timer khi initialDuration thực sự thay đổi
   useEffect(() => {
-    setTimeLeft(initialDuration);
-    setTotalTime(initialDuration);
-    setIsFinished(false);
-    setIsActive(autoStart);
-    stopAlarmRef.current = true; // Dừng mọi âm thanh đang phát khi đổi công thức
+    if (prevDurationRef.current !== initialDuration) {
+      setTimeLeft(initialDuration);
+      setTotalTime(initialDuration);
+      setIsFinished(false);
+      setIsActive(autoStart);
+      stopAlarmRef.current = true;
+      prevDurationRef.current = initialDuration;
+    }
   }, [initialDuration, autoStart]);
 
-  // Lắng nghe tín hiệu dừng từ App (khi nhấn Tuyệt vời)
+  // Lắng nghe tín hiệu dừng từ bên ngoài
   useEffect(() => {
     if (forceStopSignal > 0) {
       stopAlarmRef.current = true;
@@ -42,14 +46,18 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   ];
 
   const initAudio = () => {
-    if (!audioContextRef.current) {
-      const Ctx = window.AudioContext || (window as any).webkitAudioContext;
-      if (Ctx) {
-        audioContextRef.current = new Ctx();
+    try {
+      if (!audioContextRef.current) {
+        const Ctx = window.AudioContext || (window as any).webkitAudioContext;
+        if (Ctx) {
+          audioContextRef.current = new Ctx();
+        }
       }
-    }
-    if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
-      audioContextRef.current.resume();
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+    } catch (e) {
+      console.error("Failed to init audio:", e);
     }
   };
 
@@ -60,33 +68,39 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
 
     stopAlarmRef.current = false;
     let count = 0;
-    const maxCycles = 20;
+    const maxCycles = 30; // Tăng số hồi kêu
 
     const playChirp = (time: number) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.frequency.setValueAtTime(4500, time);
-      osc.frequency.exponentialRampToValueAtTime(4800, time + 0.04);
+      
+      // Tiếng dế kêu sắc nét hơn
+      osc.frequency.setValueAtTime(4200, time);
+      osc.frequency.exponentialRampToValueAtTime(4600, time + 0.04);
       osc.type = 'sine';
+      
       gain.connect(ctx.destination);
       osc.connect(gain);
+      
       gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(0.8, time + 0.01);
+      gain.gain.linearRampToValueAtTime(1.0, time + 0.01); // Âm lượng tối đa
       gain.gain.linearRampToValueAtTime(0, time + 0.05);
+      
       osc.start(time);
-      osc.stop(time + 0.05);
+      osc.stop(time + 0.06);
     };
 
     const nextCycle = () => {
       if (stopAlarmRef.current || count >= maxCycles) return;
       
       const now = ctx.currentTime;
+      // Một hồi kêu gồm 4 tiếng "tít tít tít tít"
       for(let j = 0; j < 4; j++) {
-        playChirp(now + (j * 0.08));
+        playChirp(now + (j * 0.09));
       }
       
       count++;
-      setTimeout(nextCycle, 600);
+      setTimeout(nextCycle, 700);
     };
 
     nextCycle();
@@ -100,7 +114,8 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
             if (prev <= 1) {
                 setIsActive(false);
                 setIsFinished(true);
-                playCricketSound();
+                // Gọi hàm phát âm thanh ngay lập tức
+                setTimeout(() => playCricketSound(), 0);
                 if (onComplete) onComplete();
                 return 0;
             }
