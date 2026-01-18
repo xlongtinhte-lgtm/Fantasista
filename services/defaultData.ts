@@ -102,6 +102,21 @@ export const DEFAULT_FORMULAS: Formula[] = [
     ]
   },
   {
+    id: 'lop-5-6-kinh-doanh-dia-oc',
+    title: 'Lớp 5.6 - Kinh Doanh Địa Ốc, Nhà Đất (Bản thân)',
+    subtitle: '3p30s | Thực hiện 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'zap',
+    steps: [
+      'Bước 1: Thực hiện văn minh kỷ cương: NLG Linh Quang Não Bộ Băng Tần Lớp 5.6 Tần số giúp kinh doanh thuận lợi.',
+      'Bước 2: Hợp nhất Năng Lượng Trái Tim Linh Hồn vào Linh Quang Não Bộ (3 lần)',
+      'Bước 3: Hợp nhất năng lượng từ Linh Quang Não Bộ người truyền vào toàn bộ khu vực nhà đất, địa ốc, khu du lịch, dịch vụ giấy tờ ...(3 lần)',
+      'Bước 4: Cầu nguyện thuận mua vừa bán, tạo được duyên lành cho 2 bên. (Học viên có thể thêm những ý tưởng phù hợp với công việc kinh doanh của mình), lặp đi lặp lại mong muốn cho đến khi chuông báo chấm dứt.',
+      'Bước 5: Nhờ các vị thiên sứ NLG tiễn tất cả tầng năng lượng: hiện diện xung quanh, có duyên nghiệp trở về khối sáng cho sự tiến hóa tiếp theo được nhiều lợi lạc.',
+      'CẢNH BÁO: Công thức này tuyệt đối chỉ dành riêng cho Học viên Lớp 5.6 thực hiện. Nếu học viên Lớp 5.6 phổ biến cho người khác thì học viên đó mất kết nối NL.'
+    ]
+  },
+  {
     id: 'lop-5-6-dieu-hoa-khi-hau',
     title: 'Lớp 5.6 - Điều Hòa Khí Hậu & Môi Trường',
     subtitle: '3p30s | 2 lần/ngày',
@@ -136,7 +151,7 @@ export const DEFAULT_FORMULAS: Formula[] = [
     steps: [
       'Bước 1: Hợp nhất Năng Lượng Trái Tim Linh Hồn vào Linh Quang Não Bộ. (3 lần).',
       'Bước 2: Hợp nhất năng lượng từ Linh Quang Não Bộ vào Linh Quang Bạc của mình. (3 lần).',
-      'Bước 3: Liên tục duy trì truyền tải NL và gửi những mong cầu vào Linh Quang Bạc của mình cho đến khi chuông báo hết giờ.\n\nVí dụ: Mong NLG luôn bảo vệ con trước những tâm linh, hỗ trợ cho con mọi nguồn lực, nhân lực để hoàn thành xuất sắc nhiệm vụ được giao .... hỗ trợ cho con thực hiện dự án ABC hiệu quả ....'
+      'Bước 3: Liên tục duy trì truyền tải NL and gửi những mong cầu vào Linh Quang Bạc của mình cho đến khi chuông báo hết giờ.\n\nVí dụ: Mong NLG luôn bảo vệ con trước những tâm linh, hỗ trợ cho con mọi nguồn lực, nhân lực để hoàn thành xuất sắc nhiệm vụ được giao .... hỗ trợ cho con thực hiện dự án ABC hiệu quả ....'
     ]
   },
   {
