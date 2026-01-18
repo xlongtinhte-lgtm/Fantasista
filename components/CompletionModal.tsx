@@ -13,7 +13,7 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
 
   if (!isOpen) return null;
 
-  const playSuccessSound = () => {
+  const playSuccessSound = async () => {
     try {
       const Ctx = window.AudioContext || (window as any).webkitAudioContext;
       if (!audioContextRef.current && Ctx) {
@@ -22,7 +22,11 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
       
       const ctx = audioContextRef.current;
       if (!ctx) return;
-      if (ctx.state === 'suspended') ctx.resume();
+      
+      // Quan trọng: Phải resume context vì nó có thể bị tạm dừng bởi hệ điều hành
+      if (ctx.state === 'suspended') {
+        await ctx.resume();
+      }
 
       const now = ctx.currentTime;
       
@@ -41,7 +45,7 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
         osc.stop(start + duration);
       };
 
-      // Âm thanh chúc mừng hân hoan (C5-E5-G5-C6)
+      // Âm thanh chúc mừng (C5-E5-G5-C6)
       playTone(523.25, now, 0.2); 
       playTone(659.25, now + 0.1, 0.2); 
       playTone(783.99, now + 0.2, 0.2); 
@@ -53,7 +57,6 @@ const CompletionModal: React.FC<CompletionModalProps> = ({ isOpen, onClose, titl
 
   const handleFinalConfirm = () => {
     playSuccessSound();
-    // Gửi tín hiệu đóng modal, App sẽ gửi tiếp tín hiệu dừng alarm cho Timer qua state
     setTimeout(onClose, 200);
   };
 

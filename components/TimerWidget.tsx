@@ -18,7 +18,6 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   const stopAlarmRef = useRef<boolean>(false);
   const prevDurationRef = useRef<number>(initialDuration);
   
-  // Chỉ reset timer khi initialDuration thực sự thay đổi
   useEffect(() => {
     if (prevDurationRef.current !== initialDuration) {
       setTimeLeft(initialDuration);
@@ -30,7 +29,6 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
     }
   }, [initialDuration, autoStart]);
 
-  // Lắng nghe tín hiệu dừng từ bên ngoài
   useEffect(() => {
     if (forceStopSignal > 0) {
       stopAlarmRef.current = true;
@@ -61,46 +59,51 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
     }
   };
 
-  const playCricketSound = () => {
+  const playCricketSound = async () => {
     initAudio();
     const ctx = audioContextRef.current;
     if (!ctx) return;
 
+    // Luôn resume trước khi phát để đảm bảo không bị block trên mobile
+    if (ctx.state === 'suspended') {
+      await ctx.resume();
+    }
+
     stopAlarmRef.current = false;
     let count = 0;
-    const maxCycles = 30; // Tăng số hồi kêu
+    const maxCycles = 40; 
 
     const playChirp = (time: number) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       
-      // Tiếng dế kêu sắc nét hơn
-      osc.frequency.setValueAtTime(4200, time);
-      osc.frequency.exponentialRampToValueAtTime(4600, time + 0.04);
-      osc.type = 'sine';
+      // Sử dụng tần số 2800Hz và dạng sóng triangle để tiếng vang và to hơn trên loa nhỏ
+      osc.frequency.setValueAtTime(2800, time);
+      osc.frequency.exponentialRampToValueAtTime(3200, time + 0.05);
+      osc.type = 'triangle'; 
       
       gain.connect(ctx.destination);
       osc.connect(gain);
       
       gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(1.0, time + 0.01); // Âm lượng tối đa
-      gain.gain.linearRampToValueAtTime(0, time + 0.05);
+      gain.gain.linearRampToValueAtTime(0.8, time + 0.01); 
+      gain.gain.linearRampToValueAtTime(0, time + 0.06);
       
       osc.start(time);
-      osc.stop(time + 0.06);
+      osc.stop(time + 0.07);
     };
 
     const nextCycle = () => {
       if (stopAlarmRef.current || count >= maxCycles) return;
       
       const now = ctx.currentTime;
-      // Một hồi kêu gồm 4 tiếng "tít tít tít tít"
+      // Phát 4 tiếng tít tít tít tít nhanh
       for(let j = 0; j < 4; j++) {
-        playChirp(now + (j * 0.09));
+        playChirp(now + (j * 0.1));
       }
       
       count++;
-      setTimeout(nextCycle, 700);
+      setTimeout(nextCycle, 800);
     };
 
     nextCycle();
@@ -114,8 +117,8 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
             if (prev <= 1) {
                 setIsActive(false);
                 setIsFinished(true);
-                // Gọi hàm phát âm thanh ngay lập tức
-                setTimeout(() => playCricketSound(), 0);
+                // Phát âm báo ngay lập tức
+                playCricketSound();
                 if (onComplete) onComplete();
                 return 0;
             }
@@ -127,6 +130,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   }, [isActive, timeLeft]);
 
   const toggleTimer = () => {
+    // Quan trọng: Mở khóa AudioContext ngay khi người dùng bấm nút
     initAudio();
     stopAlarmRef.current = true;
     setIsActive(!isActive);
@@ -134,6 +138,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   };
 
   const resetTimer = () => {
+    initAudio(); // Giữ AudioContext sẵn sàng
     stopAlarmRef.current = true;
     setIsActive(false);
     setTimeLeft(totalTime);
@@ -188,7 +193,14 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
             {presets.map((preset) => (
               <button 
                 key={preset.label} 
-                onClick={() => {setTotalTime(preset.seconds); setTimeLeft(preset.seconds); setIsActive(false); setIsFinished(false); stopAlarmRef.current = true;}} 
+                onClick={() => {
+                  initAudio(); // Warm up audio
+                  setTotalTime(preset.seconds); 
+                  setTimeLeft(preset.seconds); 
+                  setIsActive(false); 
+                  setIsFinished(false); 
+                  stopAlarmRef.current = true;
+                }} 
                 className={`py-2 px-1 text-xs rounded-xl font-bold transition-all duration-200 border ${totalTime === preset.seconds ? 'bg-pink-600 text-white border-pink-400 shadow-lg' : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-pink-500/50'}`}
               >
                 {preset.label}
