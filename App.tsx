@@ -7,7 +7,8 @@ import FormulaCard from './components/FormulaCard';
 import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw, CheckCircle2, CloudOff, CloudDownload } from 'lucide-react';
+import FormulaStep from './components/FormulaStep';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw, CheckCircle2, CloudOff, CloudDownload, Volume2 } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -15,6 +16,7 @@ const App: React.FC = () => {
   const [formulas, setFormulas] = useState<Formula[]>([]);
   const [view, setView] = useState<'grid' | 'detail' | 'edit' | 'reorder'>('grid');
   const [selectedFormulaId, setSelectedFormulaId] = useState<string | null>(null);
+  const [activeStepIndex, setActiveStepIndex] = useState<number | null>(null);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const [stopSignal, setStopSignal] = useState(0);
@@ -41,13 +43,11 @@ const App: React.FC = () => {
     window.addEventListener('offline', handleOffline);
 
     if ('serviceWorker' in navigator) {
-      // 1. Kiểm tra controller ngay lập tức
       if (navigator.serviceWorker.controller) {
         setIsOfflineReady(true);
         navigator.serviceWorker.controller.postMessage('CHECK_CACHE_STATUS');
       }
 
-      // 2. Lắng nghe tin nhắn
       const handleMessage = (event: MessageEvent) => {
         if (event.data && (event.data.type === 'CACHE_COMPLETED' || event.data.type === 'CACHE_STATUS')) {
           setIsOfflineReady(true);
@@ -55,7 +55,6 @@ const App: React.FC = () => {
       };
       navigator.serviceWorker.addEventListener('message', handleMessage);
 
-      // 3. Kiểm tra định kỳ (fallback)
       const interval = setInterval(() => {
         if (navigator.serviceWorker.controller) {
           setIsOfflineReady(true);
@@ -79,9 +78,11 @@ const App: React.FC = () => {
     setSelectedFormulaId(id);
     setView('detail');
     setShowCompletion(false);
+    setActiveStepIndex(null);
   };
 
   const handleBack = () => {
+    window.speechSynthesis.cancel();
     setView('grid');
     setSelectedFormulaId(null);
     setShowCompletion(false);
@@ -236,34 +237,42 @@ const App: React.FC = () => {
 
             {view === 'detail' && currentFormula && (
               <div className="animate-fade-in flex flex-col">
-                <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/50">
+                <div className="sticky top-0 z-20 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800/50 shadow-2xl">
                    <div className="max-w-4xl mx-auto px-4 py-2">
                      <TimerWidget initialDuration={currentFormula.durationSeconds} onComplete={handleTimerComplete} forceStopSignal={stopSignal} />
                    </div>
                 </div>
-                <div className="p-4 md:p-6 space-y-6">
-                  <div className="bg-slate-900/50 rounded-2xl p-4 md:p-8 border border-slate-800 shadow-xl relative">
+                
+                <div className="p-4 md:p-6 space-y-4">
+                  <div className="flex items-center justify-between px-2 mb-2">
+                    <div className="flex flex-col">
+                      <h2 className="text-2xl md:text-3xl font-black text-white">{currentFormula.title}</h2>
+                      <p className="text-pink-400 font-bold uppercase text-xs tracking-wider">{currentFormula.subtitle}</p>
+                    </div>
                     {isAdminMode && (
-                      <button onClick={handleEdit} className="absolute top-4 right-4 p-2 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-lg">
-                        <Edit size={16} />
+                      <button onClick={handleEdit} className="p-3 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-2xl transition-all shadow-lg">
+                        <Edit size={20} />
                       </button>
                     )}
-                    <h2 className="text-2xl md:text-3xl font-bold text-pink-200 mb-2">{currentFormula.title}</h2>
-                    <p className="text-pink-400/80 font-medium mb-6 border-b border-white/5 pb-4">{currentFormula.subtitle}</p>
-                    <div className="space-y-6">
-                      {currentFormula.steps.map((step, idx) => {
-                        const isWarning = step.startsWith('CẢNH BÁO');
-                        const isNote = step.startsWith('LƯU Ý') || step.startsWith('***');
-                        return (
-                          <div key={idx} className={`flex gap-4 ${isWarning || isNote ? 'bg-slate-800/60 p-5 rounded-xl' : 'py-2'}`}>
-                            {!isWarning && !isNote && (
-                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-pink-900/30 text-pink-400 flex items-center justify-center font-bold">{idx + 1}</div>
-                            )}
-                            <p className={`leading-relaxed whitespace-pre-line ${isWarning ? 'text-red-300 font-bold' : (isNote ? 'text-amber-200' : 'text-slate-200 text-lg')}`}>{step}</p>
-                          </div>
-                        );
-                      })}
+                  </div>
+
+                  <div className="bg-slate-900/30 p-3 rounded-2xl border border-white/5 flex items-center gap-3">
+                    <div className="p-2 bg-pink-500/20 text-pink-400 rounded-xl">
+                      <Volume2 size={20} />
                     </div>
+                    <p className="text-xs text-slate-400 font-medium">Bấm vào từng bước bên dưới để nghe giọng hướng dẫn Tiếng Việt.</p>
+                  </div>
+
+                  <div className="space-y-4 pb-20">
+                    {currentFormula.steps.map((step, idx) => (
+                      <FormulaStep 
+                        key={idx} 
+                        index={idx} 
+                        text={step} 
+                        isActive={activeStepIndex === idx}
+                        onPlay={() => setActiveStepIndex(idx)}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
