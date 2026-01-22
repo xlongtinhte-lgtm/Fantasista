@@ -38,9 +38,9 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
 
   const presets = [
     { label: '5 giây', seconds: 5 },
-    { label: '1:30', seconds: 90 },
-    { label: '3:30', seconds: 210 },
-    { label: '5:30', seconds: 330 },
+    { label: '1 phút 30 giây', seconds: 90 },
+    { label: '3 phút 30 giây', seconds: 210 },
+    { label: '5 phút 30 giây', seconds: 330 },
   ];
 
   const initAudio = () => {
@@ -64,7 +64,6 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
     const ctx = audioContextRef.current;
     if (!ctx) return;
 
-    // Luôn resume trước khi phát để đảm bảo không bị block trên mobile
     if (ctx.state === 'suspended') {
       await ctx.resume();
     }
@@ -76,36 +75,27 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
     const playChirp = (time: number) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
-      // Sử dụng tần số 2800Hz và dạng sóng triangle để tiếng vang và to hơn trên loa nhỏ
       osc.frequency.setValueAtTime(2800, time);
       osc.frequency.exponentialRampToValueAtTime(3200, time + 0.05);
       osc.type = 'triangle'; 
-      
       gain.connect(ctx.destination);
       osc.connect(gain);
-      
       gain.gain.setValueAtTime(0, time);
       gain.gain.linearRampToValueAtTime(0.8, time + 0.01); 
       gain.gain.linearRampToValueAtTime(0, time + 0.06);
-      
       osc.start(time);
       osc.stop(time + 0.07);
     };
 
     const nextCycle = () => {
       if (stopAlarmRef.current || count >= maxCycles) return;
-      
       const now = ctx.currentTime;
-      // Phát 4 tiếng tít tít tít tít nhanh
       for(let j = 0; j < 4; j++) {
         playChirp(now + (j * 0.1));
       }
-      
       count++;
       setTimeout(nextCycle, 800);
     };
-
     nextCycle();
   };
 
@@ -117,7 +107,6 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
             if (prev <= 1) {
                 setIsActive(false);
                 setIsFinished(true);
-                // Phát âm báo ngay lập tức
                 playCricketSound();
                 if (onComplete) onComplete();
                 return 0;
@@ -130,7 +119,6 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   }, [isActive, timeLeft]);
 
   const toggleTimer = () => {
-    // Quan trọng: Mở khóa AudioContext ngay khi người dùng bấm nút
     initAudio();
     stopAlarmRef.current = true;
     setIsActive(!isActive);
@@ -138,7 +126,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   };
 
   const resetTimer = () => {
-    initAudio(); // Giữ AudioContext sẵn sàng
+    initAudio(); 
     stopAlarmRef.current = true;
     setIsActive(false);
     setTimeLeft(totalTime);
@@ -189,19 +177,19 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
         </div>
 
         <div className="flex flex-col gap-4 w-full md:w-auto flex-1">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {presets.map((preset) => (
               <button 
                 key={preset.label} 
                 onClick={() => {
-                  initAudio(); // Warm up audio
+                  initAudio(); 
                   setTotalTime(preset.seconds); 
                   setTimeLeft(preset.seconds); 
                   setIsActive(false); 
                   setIsFinished(false); 
                   stopAlarmRef.current = true;
                 }} 
-                className={`py-2 px-1 text-xs rounded-xl font-bold transition-all duration-200 border ${totalTime === preset.seconds ? 'bg-pink-600 text-white border-pink-400 shadow-lg' : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-pink-500/50'}`}
+                className={`py-2 px-1 text-[10px] rounded-xl font-bold transition-all duration-200 border ${totalTime === preset.seconds ? 'bg-pink-600 text-white border-pink-400 shadow-lg' : 'bg-slate-800 text-slate-400 border-slate-700 hover:border-pink-500/50'}`}
               >
                 {preset.label}
               </button>

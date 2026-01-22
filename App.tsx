@@ -8,7 +8,7 @@ import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
 import FormulaStep from './components/FormulaStep';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, RefreshCw, CheckCircle2, CloudOff, CloudDownload, Volume2 } from 'lucide-react';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -20,10 +20,6 @@ const App: React.FC = () => {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const [stopSignal, setStopSignal] = useState(0);
-  const [isUpdating, setIsUpdating] = useState(false);
-  
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [isOfflineReady, setIsOfflineReady] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -36,42 +32,6 @@ const App: React.FC = () => {
     } else {
       setFormulas(DEFAULT_FORMULAS);
     }
-
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    if ('serviceWorker' in navigator) {
-      if (navigator.serviceWorker.controller) {
-        setIsOfflineReady(true);
-        navigator.serviceWorker.controller.postMessage('CHECK_CACHE_STATUS');
-      }
-
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data && (event.data.type === 'CACHE_COMPLETED' || event.data.type === 'CACHE_STATUS')) {
-          setIsOfflineReady(true);
-        }
-      };
-      navigator.serviceWorker.addEventListener('message', handleMessage);
-
-      const interval = setInterval(() => {
-        if (navigator.serviceWorker.controller) {
-          setIsOfflineReady(true);
-          clearInterval(interval);
-        }
-      }, 2000);
-
-      return () => {
-        navigator.serviceWorker.removeEventListener('message', handleMessage);
-        clearInterval(interval);
-      };
-    }
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
   const handleSelectFormula = (id: string) => {
@@ -82,7 +42,6 @@ const App: React.FC = () => {
   };
 
   const handleBack = () => {
-    window.speechSynthesis.cancel();
     setView('grid');
     setSelectedFormulaId(null);
     setShowCompletion(false);
@@ -118,22 +77,6 @@ const App: React.FC = () => {
     setStopSignal(s => s + 1);
   };
 
-  const handleUpdateApp = async () => {
-    const confirmUpdate = window.confirm("Cập nhật ứng dụng và xóa dữ liệu cũ?");
-    if (!confirmUpdate) return;
-    setIsUpdating(true);
-    try {
-      if ('caches' in window) {
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-      }
-      localStorage.removeItem(STORAGE_KEY);
-      window.location.reload();
-    } catch (error) {
-      setIsUpdating(false);
-    }
-  };
-
   const currentFormula = formulas.find(f => f.id === selectedFormulaId);
 
   return (
@@ -161,24 +104,7 @@ const App: React.FC = () => {
                    <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={24} />
                 </div>
                 <div className="flex flex-col items-start leading-none">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">NLG</span>
-                  
-                  <div className="flex items-center gap-1 mt-0.5">
-                    {isOfflineReady ? (
-                      <div className="flex items-center gap-1 text-[8px] font-bold text-emerald-400 uppercase bg-emerald-950/40 px-1 rounded ring-1 ring-emerald-500/20 shadow-[0_0_8px_rgba(52,211,153,0.2)]">
-                        <CheckCircle2 size={8} /> <span>Đã lưu Offline</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-[8px] font-bold text-amber-400 uppercase bg-amber-950/40 px-1 rounded animate-pulse">
-                        <CloudDownload size={8} /> <span>Đang lưu...</span>
-                      </div>
-                    )}
-                    {!isOnline && (
-                      <div className="flex items-center gap-1 text-[8px] font-bold text-slate-300 uppercase bg-slate-800 px-1 rounded">
-                        <CloudOff size={8} /> <span>Ngoại tuyến</span>
-                      </div>
-                    )}
-                  </div>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">Năng Lượng Gốc</span>
                 </div>
               </div>
               
@@ -187,7 +113,7 @@ const App: React.FC = () => {
                   NĂNG LƯỢNG TÌNH THƯƠNG TRÍ TUỆ HIỂU BIẾT TỪ TRÁI TIM LINH HỒN
                 </p>
                 <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-300/80 uppercase tracking-wider">
-                  CỦA ĐẤNG TẠO HÓA BAN NLG LINH QUANG VŨ TRỤ KỶ NGUYÊN MỚI
+                  CỦA ĐẤNG TẠO HÓA BAN NĂNG LƯỢNG GỐC LINH QUANG VŨ TRỤ KỶ NGUYÊN MỚI
                 </p>
                 <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-200/60 uppercase tracking-widest italic">
                   CHO TOÀN THỂ NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT
@@ -197,14 +123,6 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-              <button 
-                onClick={handleUpdateApp} 
-                disabled={isUpdating}
-                className={`p-2 rounded-full text-slate-500 hover:text-white hover:bg-slate-800/50 transition-all ${isUpdating ? 'animate-spin text-pink-500' : ''}`}
-                title="Cập nhật"
-              >
-                <RefreshCw size={20} />
-              </button>
               <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-500'}`}>
                 <Settings size={20} />
               </button>
@@ -254,13 +172,6 @@ const App: React.FC = () => {
                         <Edit size={20} />
                       </button>
                     )}
-                  </div>
-
-                  <div className="bg-slate-900/30 p-3 rounded-2xl border border-white/5 flex items-center gap-3">
-                    <div className="p-2 bg-pink-500/20 text-pink-400 rounded-xl">
-                      <Volume2 size={20} />
-                    </div>
-                    <p className="text-xs text-slate-400 font-medium">Bấm vào từng bước bên dưới để nghe giọng hướng dẫn Tiếng Việt.</p>
                   </div>
 
                   <div className="space-y-4 pb-20">

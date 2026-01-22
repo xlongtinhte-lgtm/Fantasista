@@ -20,10 +20,11 @@ const getIcon = (type: string) => {
   }
 };
 
-const formatDuration = (seconds: number) => {
+const formatDurationFull = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
+  if (secs === 0) return `${mins} phút`;
+  return `${mins} phút ${secs} giây`;
 };
 
 const FormulaCard: React.FC<FormulaCardProps> = ({ formula, onClick }) => {
@@ -34,9 +35,9 @@ const FormulaCard: React.FC<FormulaCardProps> = ({ formula, onClick }) => {
         className="flex flex-col items-start text-left w-full h-full bg-slate-900/50 hover:bg-slate-800 border border-slate-800 hover:border-pink-500/30 rounded-2xl p-5 transition-all duration-300 hover:shadow-xl hover:shadow-pink-900/10 overflow-hidden"
       >
         <div className="absolute top-0 right-0 p-4 opacity-50 group-hover:opacity-100 transition-opacity">
-          <div className="flex items-center gap-1 text-xs font-mono text-slate-400 bg-slate-950/50 px-2 py-1 rounded-md">
+          <div className="flex items-center gap-1 text-[10px] font-bold text-slate-400 bg-slate-950/50 px-2 py-1 rounded-md">
               <Clock size={12} />
-              {formatDuration(formula.durationSeconds)}
+              {formatDurationFull(formula.durationSeconds)}
           </div>
         </div>
 
