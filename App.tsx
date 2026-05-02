@@ -110,13 +110,13 @@ const App: React.FC = () => {
               
               <div className="flex flex-col justify-center animate-fade-in ml-1">
                 <p className="text-[9px] md:text-[11px] leading-[1.2] font-bold text-pink-400 tracking-wide uppercase drop-shadow-[0_0_8px_rgba(244,114,182,0.4)]">
-                  NĂNG LƯỢNG TÌNH THƯƠNG TRÍ TUỆ HIỂU BIẾT TỪ TRÁI TIM LINH HỒN
+                  PHẦN II NLG LQVT KNM BẰNG TẦN 13+ - THỰC HIỆN VĂN MINH KỶ CƯƠNG
                 </p>
                 <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-300/80 uppercase tracking-wider">
-                  CỦA ĐẤNG TẠO HÓA BAN NĂNG LƯỢNG GỐC LINH QUANG VŨ TRỤ KỶ NGUYÊN MỚI
+                  NÂNG CẤP TRÍ TUỆ HIỂU BIẾT TÌNH THƯƠNG - KIẾN TẠO HOÀ BÌNH HẠNH PHÚC 
                 </p>
                 <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-200/60 uppercase tracking-widest italic">
-                  CHO TOÀN THỂ NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT
+                  SỨC SỐNG THANH XUÂN TRƯỜNG THỌ CHO NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT TRÊN TOÀN CẦU
                 </p>
               </div>
             </div>
