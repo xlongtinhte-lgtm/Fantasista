@@ -48,7 +48,7 @@ export const DEFAULT_FORMULAS: Formula[] = [
       'BƯỚC 1:',
       '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
       '- Hợp nhất năng lượng từ LQNB vào tế bào não, tế bào gốc và tế bào toàn thân. (3 lần)',
-      'NLG LQVT KNM Băng Tần 13+ hoá giải toàn bộ tác nhân gây bệnh tật, bổ sung NL chữa lành, phục hồi sức khỏe toàn diện cho bản thân, giúp ngăn ngừa tắc nghẽn hệ thần kinh não bộ, hệ tuần hoàn tim mạch; ngăn chặn các tác nhân hình thành cục máu đông trong cơ thể; giúp hệ thống chuyển hoá hoạt động tích cực, ổn định huyết áp, đường huyết nằm trong chỉ số an toàn. Liên tục điều phối năng lượng từ Linh Quang Não Bộ đến tế bào não, tế bào gốc, tế bào toàn thân trong suốt thời gian thực hiện.',
+      'NLG LQVT KNM Băng Tần 13+ hoá giải toàn bộ tác nhân gây bệnh tật, bổ sung NL chữa lành, phục hồi sức khỏe toàn diện cho bản thân, giúp ngăn ngừa tắc nghẽn hệ thần kinh não bộ, hệ tuần hoàn tim mạch; ngăn chặn các tác nhân hình thành cục máu đông trong cơ thể; giúp hệ thống chuyển hoá hoạt động tích cực, ổn định huyết áp, đường huyết nằm trong chỉ số an toàn. Liên tục điều phối năng lượng từ Linh Quang Não Bộ đến tế bào không não, tế bào gốc, tế bào toàn thân trong suốt thời gian thực hiện.',
       'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
     ]
   },
@@ -152,6 +152,52 @@ export const DEFAULT_FORMULAS: Formula[] = [
     ]
   },
   {
+    id: 'chua-lanh-rang-mieng-nguoi-khac',
+    title: 'CÔNG THỨC CHỮA LÀNH BỆNH RĂNG MIỆNG CHO 1 NGƯỜI / TẬP THỂ',
+    subtitle: 'Trực tiếp/Từ xa/Qua ảnh | Bệnh nặng: 3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'smile',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ người truyền. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ người truyền vào não bộ của người nhận/tập thể người nhận. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ người truyền vào tế bào não, tế bào gốc, tế bào toàn thân và tế bào vùng răng miệng của người nhận/tập thể người nhận. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Điều chỉnh các gen hư lỗi, các tế bào khiếm khuyết, tổn thương, phục hồi nội lực, chức năng các tế bào, chữa lành bệnh răng miệng như: viêm lưỡi, viêm nướu, tụt nướu, chảy máu chân răng, hôi miệng; tiêu xương răng, lung lay răng; giãn dây chằng quanh răng, viêm cuống răng, sâu răng … giúp nướu răng và xương hàm răng phục hồi chắc khỏe cho người nhận/tập thể người nhận.',
+      'Liên tục điều phối năng lượng để cung ứng đủ cho các tế bào thực hiện chức năng theo đúng lập trình.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'chua-lanh-da-ban-than',
+    title: 'CÔNG THỨC CHỮA LÀNH CÁC BỆNH VÙNG DA CHO BẢN THÂN',
+    subtitle: '3 phút 30 giây | 2 lần/ngày | Cách nhau 6 tiếng',
+    durationSeconds: 210,
+    iconType: 'user',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ LQNB vào tế bào não, tế bào gốc, tế bào toàn thân. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Chữa lành tất cả rối loạn, bệnh tật về da: viêm da, dị ứng, nấm, tổ đỉa, hắc lào, lang ben, vảy nến,... cho bản thân.',
+      'Liên tục điều phối năng lượng vào tế bào toàn thân, tế bào da bị bệnh… của chính mình trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'chua-lanh-da-1-nguoi-tap-the',
+    title: 'CÔNG THỨC CHỮA LÀNH CÁC BỆNH VÙNG DA CHO 1 NGƯỜI/TẬP THỂ',
+    subtitle: 'Trực tiếp/Từ xa/Qua ảnh | Trên 18 tuổi: 3 phút 30 giây | 2 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'user',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào LQNB người truyền. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ người truyền vào não bộ của người nhận/tập thể người nhận. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ người truyền vào tế bào não, tế bào gốc, tế bào toàn thân, tế bào da của người nhận/tập thể người nhận. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Chữa lành tất cả những rối loạn bệnh tật về da cho người nhận/tập thể người nhận. Liên tục điều phối năng lượng vào các tế bào da bị bệnh của người nhận/tập thể người nhận trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
     id: 'cam-hoa-moi-nguoi',
     title: 'CÔNG THỨC CẢM HÓA MỌI NGƯỜI SỐNG TÍCH CỰC YÊU THƯƠNG THIỆN LÀNH',
     subtitle: 'Thực hiện 3 phút 30 giây | 1 - 2 lần/ngày',
@@ -201,6 +247,51 @@ export const DEFAULT_FORMULAS: Formula[] = [
     ]
   },
   {
+    id: 'lam-dep-toc-long-mi-may',
+    title: 'CÔNG THỨC LÀM ĐẸP TÓC, LÔNG MI, LÔNG MÀY',
+    subtitle: '3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'sparkles',
+    steps: [
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào tế bào não, tế bào gốc, tế bào toàn thân. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Làm đẹp tóc/lông mi/lông mày.',
+      'Liên tục gửi năng lượng cùng thông điệp đến vùng muốn cải thiện (tóc, lông mi, lông mày) để tế bào não điều hành các tế bào gốc, tế bào toàn thân thực hiện chỉnh sửa, làm đẹp:',
+      '1, Giúp tạo nang tóc, giúp tóc mọc đều, khỏe, óng mượt, không xơ rối, tất cả tóc bạc chuyển hoá thành tóc nâu.',
+      '2, Giúp tạo nang lông mày, khuôn lông mày, giúp lông mày mọc đều đẹp…',
+      '3, Giúp tạo nang lông mi, giúp lông mi mọc đều, mi dày, mi cong.'
+    ]
+  },
+  {
+    id: 'lam-dep-co-the',
+    title: 'CÔNG THỨC LÀM ĐẸP CƠ THỂ',
+    subtitle: 'Thực hiện 3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'sparkles',
+    steps: [
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào tế bào não, tế bào gốc, tế bào toàn thân. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Làm đẹp cơ thể:',
+      '- Điều chỉnh kích thước 3 vòng',
+      'Ví dụ: Tăng / giảm kích thước vòng 1, vòng 2, vòng 3; làm đẹp cơ thể theo mong muốn.',
+      'Liên tục gửi năng lượng cùng thông điệp đến vùng muốn cải thiện để tế bào não điều hành các tế bào gốc, tế bào toàn thân thực hiện chỉnh sửa'
+    ]
+  },
+  {
+    id: 'tang-giam-trong-luong',
+    title: 'CÔNG THỨC TĂNG/GIẢM KÍCH THƯỚC, TRỌNG LƯỢNG CƠ THỂ',
+    subtitle: 'Thực hiện 3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'weight',
+    steps: [
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào LQNB. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào tế bào não, tế bào gốc, tế bào toàn thân. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Làm đẹp cơ thể: Tăng /giảm trọng lượng ….cân trên toàn cơ thể; xóa tan lượng mỡ dư thừa, cơ thể thon gọn săn chắc.',
+      'Hoặc thực hiện từng vùng cơ thể: Làm tan mỡ, giảm kích thước vùng bụng, cánh tay, đùi...',
+      'Liên tục gửi năng lượng cùng thông điệp đến vùng muốn cải thiện để tế bào não điều hành các tế bào gốc, tế bào toàn thân thực hiện chỉnh sửa.'
+    ]
+  },
+  {
     id: 'tang-chieu-cao',
     title: 'CÔNG THỨC TĂNG CHIỀU CAO',
     subtitle: 'Thực hiện 3 phút 30 giây | 1 lần/ngày',
@@ -228,7 +319,81 @@ export const DEFAULT_FORMULAS: Formula[] = [
     ]
   },
   {
-    id: 'hoa-giai-thu-yem-bua-ngai',
+    id: 'gui-mong-cau-thien-su',
+    title: 'CT GỬI MONG CẦU ĐẾN VỊ THIÊN SỨ TRONG LQ BẠC',
+    subtitle: '3 phút 30 giây | Có thể thực hiện hàng ngày',
+    durationSeconds: 210,
+    iconType: 'mail',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ (3 lần).',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào Linh Quang Bạc của mình (3 lần).',
+      '- Hợp nhất NL từ LQNB vào sự việc hoặc người thân mà mình đang mong cầu (3 lần).',
+      'Đọc lời mong cầu với vị THIÊN SỨ CỦA MÌNH: Nguyện Xin THIÊN SỨ luôn gìn giữ nhắc nhở; dẫn dắt gia đình sống đạo đức; hỗ trợ năng lực trí tuệ; song hành giải quyết khó khăn...',
+      'Liên tục điều phối năng lượng từ LQNB vào sự việc hoặc người mà bạn đang xin trợ giúp trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng có duyên nghiệp từ vô lượng kiếp đến hiện tại đang hiện diện bên những người thân thương trong gia đình nội ngoại hai bên, nương theo NLG trở về khối sáng để được nền VMNKG đền bù ban tặng trong văn minh kỷ cương.'
+    ]
+  },
+  {
+    id: 'phat-trien-kinh-te-doanh-nghiep',
+    title: 'CÔNG THỨC ỨNG DỤNG NLG PHÁT TRIỂN KINH TẾ TRONG KINH DOANH',
+    subtitle: '3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'trending-up',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ năng lượng từ LQVT vào Linh Quang Não Bộ (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào toàn bộ khu vực nhà máy sản xuất… /cửa hàng kinh doanh… bao phủ trong bán kính 10 miles (~16 km) (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Giúp sản xuất…/kinh doanh… thuận lợi. Liên tục gửi mong cầu cửa hàng/công ty kinh doanh thuận lợi, tạo được sản phẩm chất lượng, khách hàng hài lòng, làm ăn vượng phát, đạt hiệu quả kinh tế tối ưu…',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'kinh-doanh-dia-oc',
+    title: 'CÔNG THỨC ỨNG DỤNG NLG TRONG KINH DOANH MUA BÁN ĐỊA ỐC, NHÀ ĐẤT',
+    subtitle: '3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'building',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào toàn bộ khu vực: nhà đất, địa ốc, khu du lịch, dịch vụ giấy tờ … (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Hỗ trợ công việc kinh doanh… /mua bán địa ốc, nhà đất/… thuận lợi. Liên tục gửi mong muốn hội đủ duyên lành cho cả 2 bên cùng làm ăn thuận lợi, phát triển.…. công việc kinh doanh được thuận mua vừa bán, …',
+      'Học viên có thể thêm những ý tưởng phù hợp với công việc kinh doanh của mình, lặp đi lặp lại mong muốn trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'di-chuyen-an-toan',
+    title: 'CÔNG THỨC DI CHUYỂN AN TOÀN TRÊN CÁC PHƯƠNG TIỆN',
+    subtitle: 'Thực hiện 3 phút 30 giây',
+    durationSeconds: 210,
+    iconType: 'plane',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào phương tiện (máy bay, tàu xe ...) cùng hướng di chuyển. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Hỗ trợ an toàn khỏe mạnh khi di chuyển từ… đến… không bị ùn tắc/giảm rung lắc/giảm tiếng ồn, mọi người cùng khỏe mạnh. Liên tục điều phối năng lượng từ Linh Quang Não Bộ vào phương tiện và hướng di chuyển trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'dieu-hoa-khi-hau-100km',
+    title: 'CT ĐIỀU HOÀ KHÍ HẬU & MÔI TRƯỜNG PHẠM VI 100KM',
+    subtitle: '3 phút 30 giây | 2 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'wind',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ bao phủ khắp khu vực của học viên lan tỏa ra bán kính 100km (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ giúp hoá giải … (mưa to, giông tố, mưa to gió lớn, đưa sức gió về mức an toàn) …, bảo vệ an toàn cho sự sống của con người và muôn loài vạn vật.',
+      'Liên tục truyền tải năng lượng bao phủ khắp khu vực HV lan tỏa ra bán kính 100 km và hình dung đưa phần NL dao động đó ra ngoài không gian trong suốt thời gian thực hiện.',
+      'BƯỚC 3: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'hoa-giai-thu-yem-bua-ngai-oan-khuat',
     title: 'CÔNG THỨC HOÁ GIẢI THƯ YẾM BÙA NGẢI (GIẢI OAN KHUẤT TRẢ CÔNG ĐẠO...)',
     subtitle: '3 phút 30 giây | 1 lần/ngày (trong liên tiếp 3 ngày)',
     durationSeconds: 210,
@@ -240,6 +405,49 @@ export const DEFAULT_FORMULAS: Formula[] = [
       '- NLG LQVT KNM Băng Tần 13+ nghiêm cấm lưu hành thực hiện và thu hồi 100% phước báu của những pháp sư, thầy bùa ngải. Hóa giải tất cả hình thức giam giữ, thư yếm bùa ngải; giải thoát, hoàn nguyên linh thể và chuyển ngữ cho tất cả tầng NL bị mắc kẹt trong suốt lịch trình tiến hóa. Những TL oan khuất, mời về Khối sáng để được Nền Văn Minh Ngoài Không Gian xét duyệt giải oan khuất trả công đạo, bù đắp Năng lượng một cách đầy đủ chính xác nhất cho tất cả tổn thương mất mát trong suốt lịch trình tiến hóa bằng cán cân công lý trong Văn Minh Kỷ Cương của Kỷ Nguyên Mới.',
       'Liên tục hình dung điều phối năng lượng, hàn gắn tất cả những tổn thương, chữa lành linh lượng cho tất cả đẳng cấp TL trong suốt thời gian thực hiện.',
       'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện nơi đây/trên khắp toàn cầu, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'hoa-giai-bua-chu',
+    title: 'CÔNG THỨC HOÁ GIẢI BÙA CHÚ (CHO NHÀ/ĐẤT/VẬT PHẨM...)',
+    subtitle: '3 phút 30 giây | 1 lần/ngày, liên tục trong 3 ngày rồi ngưng',
+    durationSeconds: 210,
+    iconType: 'shield',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào toàn bộ: Nhà/đất/cửa hàng/bùa chú/vật phẩm bị thư yếm. (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Hóa giải bùa chú cho nhà/đất/cửa hàng/vật phẩm bị thư yếm. Cảm ơn tất cả tầng năng lượng đã cống hiến đóng góp cho sự sống trong suốt quãng thời gian qua. Bây giờ, các vị đã hoàn thành sứ mệnh, mời các vị về Khối Sáng nghỉ ngơi, tu học để tiến hoá cao hơn. Liên tục truyền tải năng lượng trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'hoa-giai-doc-to-ran-kien-sau-bo',
+    title: 'CÔNG THỨC HÓA GIẢI ĐỘC TỐ RẮN, KIẾN, SÂU BỌ...',
+    subtitle: '3 phút 30 giây | 1 lần/ngày',
+    durationSeconds: 210,
+    iconType: 'shield-alert',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ bao phủ toàn bộ vùng đất/khu vực … (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Hóa giải quy trình tạo ra độc tố của rắn, kiến ba khoang, các loại kiến và các loại côn trùng, sâu bọ …độc hại tại vùng đất/khu vực …',
+      'Liên tục điều phối năng lượng từ Linh Quang Não Bộ bao phủ toàn bộ vùng đất/khu vực … Hóa giải việc tạo ra độc tố của các loại sâu bọ côn trùng, kiến ba khoang… trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+    ]
+  },
+  {
+    id: 'cau-nguyen-nghia-trang-truc-tiep',
+    title: 'CÔNG THỨC CẦU NGUYỆN TẠI NGHĨA TRANG (TRỰC TIẾP)',
+    subtitle: '5 phút 30 giây | Nên thực hiện 3 ngày liên tục',
+    durationSeconds: 330,
+    iconType: 'users',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ. (3 lần)',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào toàn bộ nghĩa trang và khu vực xung quanh bán kính 5km (3 lần)',
+      'NLG LQVT KNM Băng Tần 13+ Cầu nguyện cho các linh lượng hiện diện tại nghĩa trang … (tên nghĩa trang/địa chỉ) và khu vực xung quanh bán kính 5km, buông bỏ niềm đau, đón nhận NLG chữa lành linh lượng, nương theo NLG trở về Khối Sáng để tiến hóa cao hơn. Liên tục điều phối năng lượng lan tỏa ra toàn bộ khu nghĩa trang và khu vực xung quanh bán kính 5km trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh, có duyên nghiệp, nương theo NLG trở về Khối Sáng cho sự tiến hóa tiếp theo được nhiều lợi lạc.'
     ]
   }
 ];

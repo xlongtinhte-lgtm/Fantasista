@@ -1,7 +1,11 @@
 
 import React from 'react';
 import { Formula } from '../types';
-import { Heart, Shield, User, Users, Zap, Clock, ChevronRight } from 'lucide-react';
+import { 
+  Heart, Shield, User, Users, Zap, Clock, ChevronRight, 
+  Smile, Sparkles, ArrowUp, Home, Mail, TrendingUp, 
+  Building2, Plane, Wind, ShieldAlert, Activity, Timer
+} from 'lucide-react';
 
 interface FormulaCardProps {
   formula: Formula;
@@ -10,13 +14,26 @@ interface FormulaCardProps {
 }
 
 const getIcon = (type: string) => {
+  const size = 24;
   switch (type) {
-    case 'heart': return <Heart className="text-pink-500" size={24} />;
-    case 'shield': return <Shield className="text-emerald-500" size={24} />;
-    case 'users': return <Users className="text-blue-500" size={24} />;
-    case 'user': return <User className="text-purple-500" size={24} />;
-    case 'zap': return <Zap className="text-amber-500" size={24} />;
-    default: return <Heart className="text-pink-500" size={24} />;
+    case 'heart': return <Heart className="text-pink-500" size={size} />;
+    case 'shield': return <Shield className="text-emerald-500" size={size} />;
+    case 'users': return <Users className="text-blue-500" size={size} />;
+    case 'user': return <User className="text-purple-500" size={size} />;
+    case 'zap': return <Zap className="text-amber-500" size={size} />;
+    case 'smile': return <Smile className="text-pink-400" size={size} />;
+    case 'sparkles': return <Sparkles className="text-yellow-400" size={size} />;
+    case 'arrow-up': return <ArrowUp className="text-green-500" size={size} />;
+    case 'home': return <Home className="text-orange-400" size={size} />;
+    case 'mail': return <Mail className="text-blue-400" size={size} />;
+    case 'trending-up': return <TrendingUp className="text-emerald-400" size={size} />;
+    case 'building': return <Building2 className="text-slate-400" size={size} />;
+    case 'plane': return <Plane className="text-sky-400" size={size} />;
+    case 'wind': return <Wind className="text-cyan-400" size={size} />;
+    case 'shield-alert': return <ShieldAlert className="text-red-500" size={size} />;
+    case 'weight': return <Activity className="text-rose-400" size={size} />;
+    case 'timer': return <Timer className="text-indigo-400" size={size} />;
+    default: return <Heart className="text-pink-500" size={size} />;
   }
 };
 

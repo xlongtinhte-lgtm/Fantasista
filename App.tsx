@@ -8,7 +8,7 @@ import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
 import FormulaStep from './components/FormulaStep';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered } from 'lucide-react';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -20,6 +20,7 @@ const App: React.FC = () => {
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const [stopSignal, setStopSignal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -79,6 +80,20 @@ const App: React.FC = () => {
 
   const currentFormula = formulas.find(f => f.id === selectedFormulaId);
 
+  const removeAccents = (str: string) => {
+    return str.normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D')
+      .toLowerCase();
+  };
+
+  const filteredFormulas = formulas.filter(f => {
+    const searchTarget = removeAccents(f.title + ' ' + f.subtitle);
+    const query = removeAccents(searchQuery);
+    return searchTarget.includes(query);
+  });
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-slate-950 selection:bg-pink-500/30 selection:text-pink-100 font-inter">
       <header className="flex-shrink-0 min-h-[70px] md:min-h-[90px] relative overflow-hidden border-b border-white/10 z-30 sticky top-0 bg-slate-950 flex flex-col justify-center">
@@ -108,16 +123,18 @@ const App: React.FC = () => {
                 </div>
               </div>
               
-              <div className="flex flex-col justify-center animate-fade-in ml-1">
-                <p className="text-[9px] md:text-[11px] leading-[1.2] font-bold text-pink-400 tracking-wide uppercase drop-shadow-[0_0_8px_rgba(244,114,182,0.4)]">
-                  PHẦN II NLG LQVT KNM BẰNG TẦN 13+ - THỰC HIỆN VĂN MINH KỶ CƯƠNG
+              <div className="flex flex-col justify-center animate-fade-in ml-1 gap-0.5">
+                <p className="text-[8px] md:text-[10px] leading-tight font-bold text-pink-400 tracking-wider uppercase">
+                  PHẦN II NLG LQVT KNM BẰNG TẦN 13+
                 </p>
-                <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-300/80 uppercase tracking-wider">
-                  NÂNG CẤP TRÍ TUỆ HIỂU BIẾT TÌNH THƯƠNG - KIẾN TẠO HOÀ BÌNH HẠNH PHÚC 
+                <p className="text-[8px] md:text-[10px] font-semibold text-pink-300 tracking-wide uppercase">
+                  THỰC HIỆN VĂN MINH KỶ CƯƠNG
                 </p>
-                <p className="text-[8px] md:text-[10px] leading-[1.2] font-medium text-pink-200/60 uppercase tracking-widest italic">
-                  SỨC SỐNG THANH XUÂN TRƯỜNG THỌ CHO NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT TRÊN TOÀN CẦU
-                </p>
+                <div className="space-y-0 text-[7px] md:text-[9px] font-medium uppercase">
+                  <p className="text-pink-200/90">NÂNG CẤP TRÍ TUỆ HIỂU BIẾT TÌNH THƯƠNG</p>
+                  <p className="text-pink-100/80">KIẾN TẠO HOÀ BÌNH HẠNH PHÚC SỨC SỐNG THANH XUÂN TRƯỜNG THỌ</p>
+                  <p className="text-white/60 italic tracking-widest">CHO NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT TRÊN TOÀN CẦU</p>
+                </div>
               </div>
             </div>
           </div>
@@ -134,10 +151,32 @@ const App: React.FC = () => {
         <div className="max-w-4xl mx-auto min-h-full pb-10">
             {view === 'grid' && (
               <div className="animate-fade-in p-6">
-                <div className="text-center mb-8">
+                <div className="text-center mb-6">
                   <h1 className="text-2xl font-bold text-slate-200 mb-2">Thư viện công thức</h1>
                   <p className="text-slate-500 text-sm">Chọn một công thức để bắt đầu thực hành.</p>
                 </div>
+
+                <div className="mb-8 relative max-w-md mx-auto">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <Search size={18} />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm công thức..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-slate-900/50 border border-slate-800 text-slate-200 rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all placeholder:text-slate-600"
+                  />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 transition-colors"
+                    >
+                      <X size={18} />
+                    </button>
+                  )}
+                </div>
+
                 {isAdminMode && (
                    <div className="mb-6 flex justify-center">
                      <button onClick={() => setView('reorder')} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-lg border border-slate-700">
@@ -145,10 +184,16 @@ const App: React.FC = () => {
                      </button>
                    </div>
                 )}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {formulas.map((formula) => (
+                  {filteredFormulas.map((formula) => (
                     <FormulaCard key={formula.id} formula={formula} onClick={() => handleSelectFormula(formula.id)} />
                   ))}
+                  {filteredFormulas.length === 0 && (
+                    <div className="col-span-full py-20 text-center">
+                      <p className="text-slate-500 italic">Không tìm thấy công thức nào phù hợp.</p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
