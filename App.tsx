@@ -8,7 +8,8 @@ import FormulaEditor from './components/FormulaEditor';
 import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
 import FormulaStep from './components/FormulaStep';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X } from 'lucide-react';
+import LoginPage from './components/LoginPage';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X, LogOut } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -21,8 +22,12 @@ const App: React.FC = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [stopSignal, setStopSignal] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    const authStatus = localStorage.getItem('nlg_auth_status');
+    setIsAuthenticated(authStatus === 'true');
+    
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
@@ -79,6 +84,19 @@ const App: React.FC = () => {
   };
 
   const currentFormula = formulas.find(f => f.id === selectedFormulaId);
+
+  const handleLogout = () => {
+    localStorage.removeItem('nlg_auth_status');
+    setIsAuthenticated(false);
+  };
+
+  const handleLoginSuccess = () => {
+    localStorage.setItem('nlg_auth_status', 'true');
+    setIsAuthenticated(true);
+  };
+
+  if (isAuthenticated === null) return null;
+  if (!isAuthenticated) return <LoginPage onLogin={handleLoginSuccess} />;
 
   const removeAccents = (str: string) => {
     return str.normalize('NFD')
@@ -140,6 +158,13 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+              <button 
+                onClick={handleLogout}
+                className="p-2 text-slate-500 hover:text-white transition-colors"
+                title="Đăng xuất"
+              >
+                <LogOut size={20} />
+              </button>
               <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-500'}`}>
                 <Settings size={20} />
               </button>
