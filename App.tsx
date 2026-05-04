@@ -158,23 +158,26 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 ml-2">
               <button 
                 onClick={() => window.location.reload()}
-                className="p-2 text-slate-500 hover:text-white transition-colors animate-pulse-slow"
+                className="p-3 text-slate-400 hover:text-white transition-colors animate-pulse-slow active:scale-90"
                 title="Cập nhật ứng dụng"
               >
-                <RefreshCw size={20} />
+                <RefreshCw size={24} />
               </button>
               <button 
                 onClick={handleLogout}
-                className="p-2 text-slate-500 hover:text-white transition-colors"
+                className="p-3 text-slate-400 hover:text-white transition-colors active:scale-90"
                 title="Đăng xuất"
               >
-                <LogOut size={20} />
+                <LogOut size={24} />
               </button>
-              <button onClick={() => setIsAdminMode(!isAdminMode)} className={`p-2 rounded-full transition-all ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-500'}`}>
-                <Settings size={20} />
+              <button 
+                onClick={() => setIsAdminMode(!isAdminMode)} 
+                className={`p-3 rounded-full transition-all active:scale-90 ${isAdminMode ? 'text-pink-400 bg-pink-900/20' : 'text-slate-400 hover:text-white'}`}
+              >
+                <Settings size={24} />
               </button>
           </div>
         </div>

@@ -142,7 +142,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
   const progress = totalTime > 0 ? ((totalTime - timeLeft) / totalTime) * 100 : 0;
 
   return (
-    <div className={`bg-slate-900/40 backdrop-blur-md border transition-all duration-300 rounded-xl p-3 shadow-xl relative overflow-hidden ${isFinished ? 'border-red-500 animate-urgent-blink bg-red-900/20' : 'border-white/5'}`}>
+    <div className={`bg-slate-900/40 backdrop-blur-md border transition-all duration-300 rounded-xl p-4 shadow-xl relative overflow-hidden ${isFinished ? 'border-red-500 animate-urgent-blink bg-red-900/20' : 'border-white/5'}`}>
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes urgent-blink {
           0%, 100% { border-color: #ef4444; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); background-color: rgba(127, 29, 29, 0.1); }
@@ -153,17 +153,17 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
         }
       `}} />
 
-      <div className="flex flex-col gap-2 relative z-10">
-        <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 relative z-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isFinished ? 'bg-red-500 border-white text-white' : 'bg-slate-800 border-pink-500/30 text-pink-500'}`}>
-               <span className="text-sm font-black tabular-nums">{formatTime(timeLeft)}</span>
+            <div className={`flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full border-2 ${isFinished ? 'bg-red-500 border-white text-white' : 'bg-slate-800 border-pink-500/30 text-pink-500'}`}>
+               <span className="text-base font-black tabular-nums">{formatTime(timeLeft)}</span>
             </div>
-            <div className="flex flex-col overflow-hidden">
+            <div className="flex flex-col min-w-0">
                <span className={`text-[10px] uppercase tracking-widest font-black leading-none ${isFinished ? 'text-white' : 'text-slate-400'}`}>
                  {isFinished ? 'ĐÃ HẾT GIỜ' : 'Thời gian thực hiện'}
                </span>
-               <div className="flex gap-1 mt-1">
+               <div className="flex flex-wrap gap-1 mt-1.5">
                  {presets.map((preset) => (
                    <button 
                      key={preset.label} 
@@ -175,7 +175,7 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
                        setIsFinished(false); 
                        stopAlarmRef.current = true;
                      }} 
-                     className={`px-2 py-0.5 text-[8px] rounded-md font-bold transition-all border whitespace-nowrap ${totalTime === preset.seconds ? 'bg-pink-600 text-white border-pink-400' : 'bg-slate-800/50 text-slate-500 border-slate-700 hover:border-pink-500/30'}`}
+                     className={`px-2 py-1 text-[9px] rounded-md font-bold transition-all border whitespace-nowrap ${totalTime === preset.seconds ? 'bg-pink-600 text-white border-pink-400' : 'bg-slate-800/50 text-slate-500 border-slate-700 hover:border-pink-500/30'}`}
                    >
                      {preset.label}
                    </button>
@@ -184,26 +184,26 @@ const TimerWidget: React.FC<TimerWidgetProps> = ({ initialDuration = 210, autoSt
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex items-center justify-end gap-3 flex-shrink-0">
             <button 
               onClick={toggleTimer} 
-              className={`w-10 h-10 flex items-center justify-center rounded-full text-white transition-all shadow-lg active:scale-90 ${isActive ? 'bg-orange-500' : 'bg-pink-600'}`}
+              className={`w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center rounded-full text-white transition-all shadow-lg active:scale-90 ${isActive ? 'bg-orange-500 shadow-orange-500/20' : 'bg-pink-600 shadow-pink-600/20'}`}
             >
-              {isActive ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
+              {isActive ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" className="ml-0.5" />}
             </button>
             <button 
               onClick={resetTimer} 
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-800/80 text-slate-400 hover:text-white transition-all"
+              className="w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-800/80 text-slate-400 hover:text-white border border-white/5 transition-all"
             >
-              <RotateCcw size={18} />
+              <RotateCcw size={24} />
             </button>
           </div>
         </div>
 
         {/* Thinner progress bar */}
-        <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden mt-1 border border-white/5">
+        <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden mt-1 border border-white/5">
           <div 
-            className={`h-full transition-all duration-1000 ease-linear ${isFinished ? 'bg-red-500 animate-pulse' : 'bg-gradient-to-r from-pink-600 to-rose-400 shadow-[0_0_8px_rgba(236,72,153,0.5)]'}`}
+            className={`h-full transition-all duration-1000 ease-linear ${isFinished ? 'bg-red-500 animate-pulse' : 'bg-gradient-to-r from-pink-600 to-rose-400 shadow-[0_0_10px_rgba(236,72,153,0.5)]'}`}
             style={{ width: `${progress}%` }}
           />
         </div>
