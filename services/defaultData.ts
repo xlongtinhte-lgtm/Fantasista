@@ -9,9 +9,24 @@ export const DEFAULT_FORMULAS: Formula[] = [
     durationSeconds: 210,
     iconType: 'zap',
     steps: [
-      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ (3 lần)',
-      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào tế bào não, tế bào gốc, tế bào toàn thân. (3 lần)',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ toả sáng (3 lần)',
       'Liên tục điều phối năng lượng từ Linh Quang Não Bộ vào tế bào não, tế bào gốc, tế bào toàn thân để cung ứng đầy đủ năng lượng cho tế bào toàn thân toả sáng trong suốt thời gian thực hiện.'
+    ]
+  },
+  {
+    id: 'mai-am-gia-dinh-hoa-binh-nhan-loai',
+    title: 'CÔNG THỨC MÁI ẤM GIA ĐÌNH VÀ HOÀ BÌNH NHÂN LOẠI',
+    subtitle: 'Thực hiện 3 phút 30 giây',
+    durationSeconds: 210,
+    iconType: 'users',
+    steps: [
+      'BƯỚC 1:',
+      '- Hợp nhất NLG LQVT KNM Băng Tần 13+ vào Linh Quang Não Bộ (3 lần).',
+      '- Hợp nhất năng lượng từ Linh Quang Não Bộ vào tất cả đẳng cấp TL hai giới trên toàn cầu (3 lần).',
+      'Xin các vị Thiên Sứ bảo vệ toàn diện Thân Tâm cho tất cả Học viên NLG để học tập tốt, nâng cao phẩm hạnh Đạo Đức Tình Thương, vun đắp gia đình trên dưới đồng lòng, hợp tác trong hành trình tạo phước, xây dựng mái ấm gia đình, nâng cấp hiểu biết trí tuệ, hướng về mục đích chung cho sự thịnh vượng của toàn nhân loại.',
+      'Xin Tâm Linh hai giới buông bỏ hận thù, dùng phước báu đó làm hành trang sống trong Hoà Bình, đồng hành với sự yêu thương trân trọng, Thuận Thiên Ý.',
+      'Liên tục duy trì sự lan tỏa Năng lượng bao phủ toàn cầu đến tất cả đẳng cấp TL hai giới trong suốt thời gian thực hiện.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
     ]
   },
   {
@@ -59,9 +74,9 @@ export const DEFAULT_FORMULAS: Formula[] = [
     durationSeconds: 90,
     iconType: 'heart',
     steps: [
-      'BƯỚC 1: Hợp nhất năng lượng từ LQNB vào chỗ đau (3 lần)',
-      'Liên tục điều phối năng lượng từ Linh Quang Não Bộ đến chỗ đau trong suốt thời gian thực hiện.',
-      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.'
+      'BƯỚC 1: Lập tức điều phối năng lượng từ Linh Quang Não Bộ đến chỗ đau liên tục cho đến khi sức khoẻ ổn định.',
+      'BƯỚC 2: Cầu nguyện cho tất cả tầng năng lượng hiện diện xung quanh có duyên nghiệp, nương theo NLG trở về Khối Sáng để được thăng tiến lên tầng cao hơn trong hành trình tiến hóa.',
+      'Ghi chú: Tiếp tục thực hiện công thức chữa lành bản thân trong bộ công thức (thời gian tuỳ theo độ tuổi (ví dụ trên 18 tuổi thì thực hiện trong 3 phút 30 giây).'
     ]
   },
   {

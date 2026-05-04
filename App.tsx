@@ -151,7 +151,8 @@ const App: React.FC = () => {
                 <div className="space-y-0 text-[7px] md:text-[9px] font-medium uppercase">
                   <p className="text-pink-200/90">NÂNG CẤP TRÍ TUỆ HIỂU BIẾT TÌNH THƯƠNG</p>
                   <p className="text-pink-100/80">KIẾN TẠO HOÀ BÌNH HẠNH PHÚC SỨC SỐNG THANH XUÂN TRƯỜNG THỌ</p>
-                  <p className="text-white/60 italic tracking-widest">CHO NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT TRÊN TOÀN CẦU</p>
+                  <p className="text-white/60 italic tracking-widest text-[6px] md:text-[8px]">CHO NHÂN SINH VÀ MUÔN LOÀI VẠN VẬT TRÊN TOÀN CẦU</p>
+                  <p className="text-[7px] md:text-[9px] text-pink-400 font-mono mt-1 opacity-80">CẬP NHẬT: 01/05/2026</p>
                 </div>
               </div>
             </div>
