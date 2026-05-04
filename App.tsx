@@ -9,7 +9,7 @@ import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
 import FormulaStep from './components/FormulaStep';
 import LoginPage from './components/LoginPage';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X, LogOut } from 'lucide-react';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X, LogOut, RefreshCw } from 'lucide-react';
 
 const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
 
@@ -160,6 +160,13 @@ const App: React.FC = () => {
 
           <div className="flex items-center gap-2 flex-shrink-0 ml-2">
               <button 
+                onClick={() => window.location.reload()}
+                className="p-2 text-slate-500 hover:text-white transition-colors animate-pulse-slow"
+                title="Cập nhật ứng dụng"
+              >
+                <RefreshCw size={20} />
+              </button>
+              <button 
                 onClick={handleLogout}
                 className="p-2 text-slate-500 hover:text-white transition-colors"
                 title="Đăng xuất"
@@ -233,10 +240,10 @@ const App: React.FC = () => {
                 </div>
                 
                 <div className="p-4 md:p-6 space-y-4">
-                  <div className="flex items-center justify-between px-2 mb-2">
+                  <div className="flex items-center justify-between px-2 mb-1">
                     <div className="flex flex-col">
-                      <h2 className="text-2xl md:text-3xl font-black text-white">{currentFormula.title}</h2>
-                      <p className="text-pink-400 font-bold uppercase text-xs tracking-wider">{currentFormula.subtitle}</p>
+                      <h2 className="text-xl md:text-2xl font-black text-white leading-tight">{currentFormula.title}</h2>
+                      <p className="text-pink-400 font-bold uppercase text-[10px] tracking-widest">{currentFormula.subtitle}</p>
                     </div>
                     {isAdminMode && (
                       <button onClick={handleEdit} className="p-3 bg-slate-800 hover:bg-pink-600 text-slate-400 hover:text-white rounded-2xl transition-all shadow-lg">

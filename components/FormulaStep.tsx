@@ -31,8 +31,8 @@ const FormulaStep: React.FC<FormulaStepProps> = ({ index, text, isActive, onPlay
         )}
         
         <div className="flex-grow">
-          <p className={`leading-relaxed text-lg transition-colors duration-300 ${
-            isWarning ? 'text-red-300 font-bold' : (isNote ? 'text-amber-200 font-medium italic' : (isActive ? 'text-white font-medium' : 'text-slate-300'))
+          <p className={`leading-relaxed text-xl transition-colors duration-300 ${
+            isWarning ? 'text-red-300 font-bold' : (isNote ? 'text-amber-200 font-medium italic' : (isActive ? 'text-white font-semibold' : 'text-slate-300'))
           }`}>
             {text}
           </p>
