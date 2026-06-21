@@ -29,5 +29,6 @@ export interface Formula {
   subtitle: string;
   durationSeconds: number; // e.g. 210 for 3:30
   steps: string[];
-  iconType: 'heart' | 'shield' | 'user' | 'users' | 'zap';
+  iconType: string;
+  category?: 'self' | 'environment';
 }

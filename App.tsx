@@ -9,9 +9,9 @@ import CompletionModal from './components/CompletionModal';
 import ReorderList from './components/ReorderList';
 import FormulaStep from './components/FormulaStep';
 import LoginPage from './components/LoginPage';
-import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X, LogOut, RefreshCw } from 'lucide-react';
+import { Heart, ArrowLeft, Settings, Edit, ListOrdered, Search, X, LogOut, RefreshCw, Wind } from 'lucide-react';
 
-const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_7';
+const STORAGE_KEY = 'nlg_formulas_v5_clean_reset_9';
 
 const App: React.FC = () => {
   const [formulas, setFormulas] = useState<Formula[]>([]);
@@ -22,6 +22,7 @@ const App: React.FC = () => {
   const [showCompletion, setShowCompletion] = useState(false);
   const [stopSignal, setStopSignal] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<'self' | 'environment'>('self');
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -107,6 +108,10 @@ const App: React.FC = () => {
   };
 
   const filteredFormulas = formulas.filter(f => {
+    const isEnv = f.category === 'environment';
+    if (activeTab === 'self' && isEnv) return false;
+    if (activeTab === 'environment' && !isEnv) return false;
+
     const searchTarget = removeAccents(f.title + ' ' + f.subtitle);
     const query = removeAccents(searchQuery);
     return searchTarget.includes(query);
@@ -137,7 +142,7 @@ const App: React.FC = () => {
                    <Heart className="text-pink-500 relative z-10 fill-pink-500/20" size={24} />
                 </div>
                 <div className="flex flex-col items-start leading-none">
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-rose-300 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap">Năng Lượng Gốc</span>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-rose-300 to-pink-500 font-black text-xl md:text-2xl tracking-tighter uppercase whitespace-nowrap drop-shadow-[0_0_12px_rgba(236,72,153,0.3)] transition-all duration-300 hover:brightness-115">NLG</span>
                 </div>
               </div>
               
@@ -192,7 +197,7 @@ const App: React.FC = () => {
                   <p className="text-slate-500 text-sm">Chọn một công thức để bắt đầu thực hành.</p>
                 </div>
 
-                <div className="mb-8 relative max-w-md mx-auto">
+                <div className="mb-4 relative max-w-md mx-auto">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
                     <Search size={18} />
                   </div>
@@ -201,7 +206,7 @@ const App: React.FC = () => {
                     placeholder="Tìm kiếm công thức..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-slate-900/50 border border-slate-800 text-slate-200 rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all placeholder:text-slate-600"
+                    className="w-full bg-slate-900/50 border border-slate-800 text-slate-200 rounded-xl py-2.5 pl-10 pr-10 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500/50 transition-all placeholder:text-slate-600 font-medium"
                   />
                   {searchQuery && (
                     <button 
@@ -211,6 +216,31 @@ const App: React.FC = () => {
                       <X size={18} />
                     </button>
                   )}
+                </div>
+
+                <div className="flex justify-center gap-2 mb-6 max-w-md mx-auto">
+                  <button
+                    onClick={() => setActiveTab('self')}
+                    className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border ${
+                      activeTab === 'self'
+                        ? 'bg-gradient-to-r from-pink-600/20 to-rose-600/20 text-pink-400 border-pink-500/30 shadow-[0_0_15px_rgba(235,53,153,0.15)] font-extrabold'
+                        : 'bg-slate-900/30 text-slate-500 border-slate-900 hover:text-slate-300 hover:bg-slate-900/50'
+                    }`}
+                  >
+                    <Heart size={16} className={activeTab === 'self' ? 'fill-pink-500/10' : ''} />
+                    Bản thân
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('environment')}
+                    className={`flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 border ${
+                      activeTab === 'environment'
+                        ? 'bg-gradient-to-r from-pink-600/20 to-rose-600/20 text-pink-400 border-pink-500/30 shadow-[0_0_15px_rgba(235,53,153,0.15)] font-extrabold'
+                        : 'bg-slate-900/30 text-slate-500 border-slate-900 hover:text-slate-300 hover:bg-slate-900/50'
+                    }`}
+                  >
+                    <Wind size={16} className={activeTab === 'environment' ? 'animate-pulse' : ''} />
+                    Môi trường
+                  </button>
                 </div>
 
                 {isAdminMode && (
